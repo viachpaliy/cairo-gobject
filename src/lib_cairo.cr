@@ -1,0 +1,969 @@
+@[Link("cairo-gobject")]
+lib LibCairo
+
+  ###########################################
+  ##    Functions
+  ###########################################
+
+  struct UserDataKey
+    unused : Int32
+  end
+
+  struct Glyph
+    index : UInt64
+    x : Float64
+    y : Float64
+  end
+
+  struct RectangleList
+    status : LibCairo::Status
+    rectangles : LibCairo::Rectangle*
+    num_rectangles : Int32
+  end
+
+  alias DestroyFunc = Void* -> Void
+
+  fun create = cairo_create(target : LibCairo::Surface*) : LibCairo::Context*
+
+  fun reference = cairo_reference(cr : LibCairo::Context*) : LibCairo::Context*
+  
+  fun destroy = cairo_destroy(this : LibCairo::Context*)
+
+  fun get_reference_count = cairo_get_reference_count(cr: LibCairo::Context*) : UInt32
+  
+  fun save = cairo_save(cr : LibCairo::Context*) : Void
+
+  fun restore = cairo_restore(cr : LibCairo::Context*) : Void
+
+  fun push_group = cairo_push_group(cr : LibCairo::Context*) : Void
+
+  fun push_group_with_content = cairo_push_group_with_content( 
+    cr : LibCairo::Context*, 
+    content : LibCairo::Content 
+  ) : Void 
+
+  fun pop_group = cairo_pop_group(cr : LibCairo::Context*) : LibCairo::PatternType
+
+  fun pop_group_to_source = cairo_pop_group_to_source(cr : LibCairo::Context*) : LibCairo::Context*
+  
+  fun set_operator = cairo_set_operator( 
+    cr : LibCairo::Context*, 
+    op : LibCairo::Operator
+  ) : Void 
+
+  fun set_source = cairo_set_source( 
+    cr : LibCairo::Context*, 
+    source : LibCairo::PatternType 
+  ) : Void 
+
+  fun set_source_rgb = cairo_set_source_rgb(
+    cr : LibCairo::Context*,
+    red : Float64,
+    green : Float64,
+    blue : Float64
+  ) : Void 
+  
+  fun set_source_rgba = cairo_set_source_rgba(
+    cr : LibCairo::Context*,
+    red : Float64,
+    green : Float64,
+    blue : Float64,
+    alfa : Float64
+  ) : Void 
+
+  fun set_source_surface = cairo_set_source_surface( 
+    cr : LibCairo::Context*, 
+    surface : LibCairo::Surface*, 
+    x : Float64, 
+    y : Float64 
+  ) : Void 
+
+  fun set_tolerance = cairo_set_tolerance( 
+    cr : LibCairo::Context*, 
+    tolerance : Float64 
+  ) : Void 
+
+  fun set_antialias = cairo_set_antialias( 
+    cr : LibCairo::Context*, 
+    antialias : LibCairo::Antialias 
+  ) : Void 
+
+  fun set_fill_rule = cairo_set_fill_rule( 
+    cr : LibCairo::Context*, 
+    fill_rule : LibCairo::FillRule 
+  ) : Void 
+
+  fun set_line_width = cairo_set_line_width(
+    cr : LibCairo::Context*,
+    width : Float64
+  ) : Void 
+  
+  fun set_line_cap = cairo_set_line_cap( 
+    cr : LibCairo::Context*, 
+    line_cap : LibCairo::LineCap
+  ) : Void 
+
+  fun set_line_join = cairo_set_line_join( 
+    cr : LibCairo::Context*, 
+    line_join : LibCairo::LineJoin
+  ) : Void 
+
+  fun set_dash = cairo_set_dash( 
+    cr : LibCairo::Context*, 
+    dashes : Float64*, 
+    num_dashes : Int32, 
+    offset : Float64 
+  ) : Void 
+
+  fun set_miter_limit = cairo_set_miter_limit( 
+    cr : LibCairo::Context*, 
+    limit : Float64 
+  ) : Void 
+
+  fun translate = cairo_translate(
+    cr : LibCairo::Context*,
+     x : Float64 ,
+     y : Float64
+  ) : Void 
+  
+  fun scale = cairo_scale( 
+    cr : LibCairo::Context*, 
+    sx : Float64, 
+    sy : Float64 
+  ) : Void 
+
+  fun rotate = cairo_rotate( 
+    cr : LibCairo::Context*, 
+    angle : Float64 
+  ) : Void 
+
+  fun transform = cairo_transform( 
+    cr : LibCairo::Context*, 
+    matrix : LibCairo::Matrix*
+  ) : Void 
+
+  fun set_matrix = cairo_set_matrix( 
+    cr : LibCairo::Context*, 
+    matrix : LibCairo::Matrix* 
+  ) : Void 
+
+  fun identity_matrix = cairo_identity_matrix(cr : LibCairo::Context*) : Void
+
+  fun user_to_device = cairo_user_to_device( 
+    cr : LibCairo::Context*, 
+    x : Float64*, 
+    y : Float64* 
+  ) : Void 
+
+  fun user_to_device_distance = cairo_user_to_device_distance( 
+    cr : LibCairo::Context*, 
+    dx : Float64*, 
+    dy : Float64* 
+  ) : Void 
+
+  fun device_to_user = cairo_device_to_user(
+    cr : LibCairo::Context*, 
+    x : Float64*, 
+    y : Float64* 
+  ) : Void
+
+  fun device_to_user_distance = cairo_device_to_user_distance(
+    cr : LibCairo::Context*, 
+    dx : Float64*, 
+    dy : Float64* 
+  ) : Void
+
+  fun new_path = cairo_new_path(cr : LibCairo::Context*) : Void
+
+  fun move_to = cairo_move_to(cr : LibCairo::Context*, x : Float64, y : Float64) : Void
+  
+  fun new_sub_path = cairo_new_sub_path(cr : LibCairo::Context*) : Void
+
+  fun line_to = cairo_line_to(cr : LibCairo::Context*, x : Float64 ,y : Float64) : Void
+  
+  fun curve_to = cairo_curve_to( 
+    cr : LibCairo::Context*, 
+    x1 : Float64, 
+    y1 : Float64, 
+    x2 : Float64, 
+    y2 : Float64, 
+    x3 : Float64, 
+    y3 : Float64 
+  ) : Void 
+ 
+  fun arc = cairo_arc(
+    cr : LibCairo::Context*,
+    xc : Float64,
+    yc : Float64,
+    radius : Float64,
+    angle1 : Float64,
+    angle2 : Float64
+  ) : Void
+  
+  fun arc_negative = cairo_arc_negative(
+    cr : LibCairo::Context*,
+    xc : Float64,
+    yc : Float64,
+    radius : Float64,
+    angle1 : Float64,
+    angle2 : Float64
+  ) : Void
+
+  fun rel_move_to = cairo_rel_move_to( 
+    cr : LibCairo::Context*, 
+    dx : Float64, 
+    dy : Float64 
+  ) : Void 
+
+  fun rel_line_to = cairo_rel_line_to(
+    cr : LibCairo::Context*, 
+    dx : Float64, 
+    dy : Float64 
+  ) : Void
+
+  fun rel_curve_to = cairo_rel_curve_to( 
+    cr : LibCairo::Context*, 
+    dx1 : Float64, 
+    dy1 : Float64, 
+    dx2 : Float64, 
+    dy2 : Float64, 
+    dx3 : Float64, 
+    dy3 : Float64 
+  ) : Void 
+
+  fun rectangle = cairo_rectangle(
+    cr : LibCairo::Context*,
+    x : Float64,
+    y : Float64,
+    width : Float64,
+    height : Float64
+  ) : Void
+
+  fun close_path = cairo_close_path(cr : LibCairo::Context*) : Void
+
+  fun path_extents = cairo_path_extents(
+    cr : LibCairo::Context*,
+    x1 : Float64*,
+    y1 : Float64*,
+    x2 : Float64*,
+    y2 : Float64*
+  ) : Void
+
+  fun paint = cairo_paint(cr : LibCairo::Context*) : Void
+
+  fun paint_with_alpha = cairo_paint_with_alpha(
+    cr : LibCairo::Context*,
+    alpha : Float64
+  ) : Void
+
+  fun mask = cairo_mask(
+    cr : LibCairo::Context*,
+    pattern : LibCairo::PatternType
+  ) : Void
+
+  fun mask_surface = cairo_mask_surface(
+    cr : LibCairo::Context*,
+    surface : LibCairo::Context*,
+    surface_x : Float64,
+    surface_y : Float64
+  ) : Void
+
+  fun stroke = cairo_stroke(cr : LibCairo::Context*) : Void 
+  
+  fun stroke_preserve = cairo_stroke_preserve(cr : LibCairo::Context* ) : Void 
+  
+  fun fill = cairo_fill(cr : LibCairo::Context*) : Void 
+  
+  fun copy_page = cairo_copy_page(cr : LibCairo::Context*) : Void
+
+  fun show_page = cairo_show_page(cr : LibCairo::Context*) : Void
+  
+  fun in_stroke = cairo_in_stroke(
+    cr : LibCairo::Context*,
+    x : Float64,
+    y : Float64
+  ) : Int32
+
+  fun in_fill = cairo_in_fill(
+    cr : LibCairo::Context*,
+    x : Float64,
+    y : Float64
+  ) : Int32
+
+  fun in_clip = cairo_in_clip(
+    cr : LibCairo::Context*,
+    x : Float64,
+    y : Float64
+  ) : Int32
+
+  fun stroke_extents = cairo_stroke_extents(
+    cr : LibCairo::Context*,
+    x1 : Float64*,
+    y1 : Float64*,
+    x2 : Float64*,
+    y2 : Float64*
+  ) : Void
+
+  fun fill_extents = cairo_fill_extents(
+    cr : LibCairo::Context*,
+    x1 : Float64,
+    y1 : Float64,
+    x2 : Float64,
+    y2 : Float64
+  ) : Void
+
+  fun reset_clip = cairo_reset_clip(cr : LibCairo::Context*) : Void
+
+  fun clip = cairo_clip(cr : LibCairo::Context*) : Void
+
+  fun clip_preserve = cairo_clip_preserve(cr : LibCairo::Context*) : Void
+
+  fun copy_clip_rectangle_list = cairo_copy_clip_rectangle_list(
+    cr : LibCairo::Context*
+  ) : LibCairo::RectangleList*
+
+  fun rectangle_list_destroy = cairo_rectangle_list_destroy(
+      rectangle_list : LibCairo::RectangleList*
+  ) : Void
+
+  fun glyph_allocate = cairo_glyph_allocate(num_glyphs : Int32) : LibCairo::Glyph*
+
+  fun glyph_free = cairo_glyph_free(glyphs : LibCairo::Glyph*) : Void
+
+  struct TextCluster
+    num_bytes : Int32
+    num_glyphs : Int32
+  end
+
+  fun text_cluster_allocate = cairo_text_cluster_allocate(
+    num_clusters : Int32
+  ) : LibCairo::TextCluster*
+
+  fun text_cluster_free = cairo_text_cluster_free(
+    clusters : LibCairo::TextCluster*
+  ) : Void
+
+  struct TextExtents
+    x_bearing : Float64
+    y_bearing : Float64
+    width : Float64
+    height : Float64
+    x_advance : Float64
+    y_advance : Float64
+  end
+
+  struct FontExtents
+    ascent : Float64
+    descent : Float64
+    height : Float64
+    max_x_advance : Float64
+    max_y_advance : Float64
+  end
+
+   fun font_options_create = cairo_font_options_create(
+    ) : LibCairo::FontOptions*
+
+    fun font_options_copy = cairo_font_options_copy(
+      original : LibCairo::FontOptions*
+    ) : LibCairo::FontOptions*
+
+    fun font_options_destroy = cairo_font_options_destroy(
+      options : LibCairo::FontOptions*
+    ) : Void
+
+    fun font_options_status = cairo_font_options_status(
+      options : LibCairo::FontOptions*
+    ) : LibCairo::Status
+
+    fun font_options_merge = cairo_font_options_merge(
+      options : LibCairo::FontOptions*,
+      other : LibCairo::FontOptions*
+    ) : Void
+
+    fun font_options_equal = cairo_font_options_equal(
+      options : LibCairo::FontOptions*,
+      other : LibCairo::FontOptions*
+    ) : Int32
+
+    fun font_options_hash = cairo_font_options_hash(
+      options : LibCairo::FontOptions*
+    ) : UInt64
+
+    fun font_options_set_antialias = cairo_font_options_set_antialias(
+      options : LibCairo::FontOptions*,
+      antialias : LibCairo::Antialias
+    ) : Void
+
+    fun font_options_get_antialias = cairo_font_options_get_antialias(
+      options : LibCairo::FontOptions*
+    ) : LibCairo::Antialias
+
+    fun font_options_set_subpixel_order = cairo_font_options_set_subpixel_order(
+      options : LibCairo::FontOptions*,
+      subpixel_order : LibCairo::SubpixelOrder
+    ) : Void
+
+    fun font_options_get_subpixel_order = cairo_font_options_get_subpixel_order(
+      options : LibCairo::FontOptions*
+    ) : LibCairo::SubpixelOrder
+
+    fun font_options_set_hint_style = cairo_font_options_set_hint_style(
+      options : LibCairo::FontOptions*,
+      hint_style : LibCairo::HintStyle
+    ) : Void
+
+    fun font_options_get_hint_style = cairo_font_options_get_hint_style(
+      options : LibCairo::FontOptions*
+    ) : LibCairo::HintStyle
+
+    fun font_options_set_hint_metrics = cairo_font_options_set_hint_metrics(
+      options : LibCairo::FontOptions*,
+      hint_metrics : LibCairo::HintMetrics
+    ) : Void
+
+    fun font_options_get_hint_metrics = cairo_font_options_get_hint_metrics(
+      options : LibCairo::FontOptions*
+    ) : LibCairo::HintMetrics
+
+    fun select_font_face = cairo_select_font_face(
+      cr : LibCairo::Context*,
+      family : UInt8*,
+      slant : LibCairo::FontSlant,
+      weight : LibCairo::FontWeight
+    ) : Void
+
+    fun set_font_size = cairo_set_font_size(
+      cr : LibCairo::Context*,
+      size : Float64
+    ) : Void
+
+    fun set_font_matrix = cairo_set_font_matrix(
+      cr : LibCairo::Context*,
+      matrix : LibCairo::Matrix*
+    ) : Void
+
+    fun get_font_matrix = cairo_get_font_matrix(
+      cr : LibCairo::Context*,
+      matrix : LibCairo::Matrix*
+    ) : Void
+
+    fun set_font_options = cairo_set_font_options(
+      cr : LibCairo::Context*,
+      options : LibCairo::FontOptions*
+    ) : Void
+
+    fun get_font_options = cairo_get_font_options(
+      cr : LibCairo::Context*,
+      options : LibCairo::FontOptions*
+    ) : Void
+
+    fun set_font_face = cairo_set_font_face(
+      cr : LibCairo::Context*,
+      font_face : LibCairo::FontFace*
+    ) : Void
+
+    fun get_font_face = cairo_get_font_face(
+      cr : LibCairo::Context*
+    ) : LibCairo::FontFace*
+
+    fun set_scaled_font = cairo_set_scaled_font(
+      cr : LibCairo::Context*,
+      scaled_font : LibCairo::ScaledFont*
+    ) : Void
+
+    fun get_scaled_font = cairo_get_scaled_font(
+      cr : LibCairo::Context*
+    ) : LibCairo::ScaledFont*
+
+    fun show_text = cairo_show_text(
+      cr : LibCairo::Context*,
+      utf8 : UInt8*
+    ) : Void
+
+    fun show_glyphs = cairo_show_glyphs(
+      cr : LibCairo::Context*,
+      glyphs : LibCairo::Glyph*,
+      num_glyphs : Int32
+    ) : Void
+
+    fun show_text_glyphs = cairo_show_text_glyphs(
+      cr : LibCairo::Context*,
+      utf8 : UInt8*,
+      utf8_len : Int32,
+      glyphs : LibCairo::Glyph*,
+      num_glyphs : Int32,
+      clusters : LibCairo::TextCluster*,
+      num_clusters : Int32,
+      cluster_flags : LibCairo::TextClusterFlags
+    ) : Void
+
+    fun text_path = cairo_text_path(
+      cr : LibCairo::Context*,
+      utf8 : UInt8*
+    ) : Void
+
+    fun glyph_path = cairo_glyph_path(
+      cr : LibCairo::Context*,
+      glyphs : LibCairo::Glyph*,
+      num_glyphs : Int32
+    ) : Void
+
+    fun text_extents = cairo_text_extents(
+      cr : LibCairo::Context*,
+      utf8 : UInt8*,
+      extents : LibCairo::TextExtents*
+    ) : Void
+
+    fun glyph_extents = cairo_glyph_extents(
+      cr : LibCairo::Context*,
+      glyphs : LibCairo::Glyph*,
+      num_glyphs : Int32,
+      extents : LibCairo::TextExtents*
+    ) : Void
+
+    fun font_extents = cairo_font_extents(
+      cr : LibCairo::Context*,
+      extents : LibCairo::FontExtents*
+    ) : Void
+
+    # Generic identifier for a font style
+
+    fun font_face_reference = cairo_font_face_reference(
+      font_face : LibCairo::FontFace*
+    ) : LibCairo::FontFace*
+
+    fun font_face_destroy = cairo_font_face_destroy(
+      font_face : LibCairo::FontFace*
+    ) : Void
+
+    fun font_face_get_reference_count = cairo_font_face_get_reference_count(
+      font_face : LibCairo::FontFace*
+    ) : UInt32
+
+    fun font_face_status = cairo_font_face_status(
+      font_face : LibCairo::FontFace*
+    ) : LibCairo::Status
+
+    ##########################################################
+
+    fun region_create = cairo_region_create() : LibCairo::Region*
+
+    fun region_create_rectangle = cairo_region_create_rectangle(
+      rectangle : LibCairo::RectangleInt*
+    ) : LibCairo::Region*
+
+    fun region_create_rectangles = cairo_region_create_rectangles(
+      rects : LibCairo::RectangleInt*,
+      count : Int32
+    ) : LibCairo::Region*
+
+    fun region_copy = cairo_region_copy(
+      original : LibCairo::Region*
+    ) : LibCairo::Region*
+
+    fun region_reference = cairo_region_reference(
+      region : LibCairo::Region*
+    ) : LibCairo::Region*
+
+    fun region_destroy = cairo_region_destroy(
+      region : LibCairo::Region*
+    ) : Void
+
+    fun region_equal = cairo_region_equal(
+      a : LibCairo::Region*,
+      b : LibCairo::Region*
+    ) : Int32
+
+    fun region_status = cairo_region_status(
+      region : LibCairo::Region*
+    ) : LibCairo::Status
+
+    fun region_get_extents = cairo_region_get_extents(
+      region : LibCairo::Region*,
+      extents : LibCairo::RectangleInt*
+    ) : Void
+
+    fun region_num_rectangles = cairo_region_num_rectangles(
+      region : LibCairo::Region*
+    ) : Int32
+
+    fun region_get_rectangle = cairo_region_get_rectangle(
+      region : LibCairo::Region*,
+      nth : Int32,
+      rectangle : LibCairo::RectangleInt*
+    ) : Void
+
+    fun region_is_empty = cairo_region_is_empty(
+      region : LibCairo::Region*
+    ) : Int32
+
+    fun region_contains_rectangle = cairo_region_contains_rectangle(
+      region : LibCairo::Region*,
+      rectangle : LibCairo::RectangleInt*
+    ) : LibCairo::RegionOverlap
+
+    fun region_contains_point = cairo_region_contains_point(
+      region : LibCairo::Region*,
+      x : Int32,
+      y : Int32
+    ) : Int32
+
+    fun region_translate = cairo_region_translate(
+      region : LibCairo::Region*,
+      dx : Int32,
+      dy : Int32
+    ) : Void
+
+    fun region_subtract = cairo_region_subtract(
+      dst : LibCairo::Region*,
+      other : LibCairo::Region*
+    ) : LibCairo::Status
+
+    fun region_subtract_rectangle = cairo_region_subtract_rectangle(
+      dst : LibCairo::Region*,
+      rectangle : LibCairo::RectangleInt*
+    ) : LibCairo::Status
+
+    fun region_intersect = cairo_region_intersect(
+      dst : LibCairo::Region*,
+      other : LibCairo::Region*
+    ) : LibCairo::Status
+
+    fun region_intersect_rectangle = cairo_region_intersect_rectangle(
+      dst : LibCairo::Region*,
+      rectangle : LibCairo::RectangleInt*
+    ) : LibCairo::Status
+
+    fun region_union = cairo_region_union(
+      dst : LibCairo::Region*,
+      other : LibCairo::Region*
+    ) : LibCairo::Status
+
+    fun region_union_rectangle = cairo_region_union_rectangle(
+      dst : LibCairo::Region*,
+      rectangle : LibCairo::RectangleInt*
+    ) : LibCairo::Status
+
+    fun region_xor = cairo_region_xor(
+      dst : LibCairo::Region*,
+      other : LibCairo::Region*
+    ) : LibCairo::Status
+
+    fun region_xor_rectangle = cairo_region_xor_rectangle(
+      dst : LibCairo::Region*,
+      rectangle : LibCairo::RectangleInt*
+    ) : LibCairo::Status
+
+    fun matrix_init = cairo_matrix_init(
+      matrix : LibCairo::Matrix*,
+      xx : Float64,
+      yx : Float64,
+      xy : Float64,
+      yy : Float64,
+      x0 : Float64,
+      y0 : Float64
+    ) : Void
+
+    fun matrix_init_identity = cairo_matrix_init_identity(
+      matrix : LibCairo::Matrix*,
+    ) : Void
+
+    fun matrix_init_translate = cairo_matrix_init_translate(
+      matrix : LibCairo::Matrix*,
+      tx : Float64,
+      ty : Float64
+    ) : Void
+
+    fun matrix_init_scale = cairo_matrix_init_scale(
+      matrix : LibCairo::Matrix*,
+      sx : Float64,
+      sy : Float64
+    ) : Void
+
+    fun matrix_init_rotate = cairo_matrix_init_rotate(
+      matrix : LibCairo::Matrix*,
+      radians : Float64
+    ) : Void
+
+    fun matrix_translate = cairo_matrix_translate(
+      matrix : LibCairo::Matrix*,
+      tx : Float64,
+      ty : Float64
+    ) : Void
+
+    fun matrix_scale = cairo_matrix_scale(
+      matrix : LibCairo::Matrix*,
+      sx : Float64,
+      sy : Float64
+    ) : Void
+
+    fun matrix_rotate = cairo_matrix_rotate(
+      matrix : LibCairo::Matrix*,
+      radians : Float64
+    ) : Void
+
+    fun matrix_invert = cairo_matrix_invert(
+      matrix : LibCairo::Matrix*,
+    ) : LibCairo::Status
+
+    fun matrix_multiply = cairo_matrix_multiply(
+      result : LibCairo::Matrix*,
+      a : LibCairo::Matrix*,
+      b : LibCairo::Matrix*
+    ) : Void
+
+    fun matrix_transform_distance = cairo_matrix_transform_distance(
+      matrix : LibCairo::Matrix*,
+      dx : Float64*,
+      dy : Float64*
+    ) : Void
+
+    fun matrix_transform_point = cairo_matrix_transform_point(
+      matrix : LibCairo::Matrix*,
+      x : Float64*,
+      y : Float64*
+    ) : Void
+
+    fun pattern_set_filter = cairo_pattern_set_filter(
+      pattern :  LibCairo::Pattern*,
+      filter : LibCairo::Filter
+    ) : Void
+
+    fun pattern_get_filter = cairo_pattern_get_filter(
+      pattern :  LibCairo::Pattern*,
+    ) : LibCairo::Filter
+
+    fun pattern_get_rgba = cairo_pattern_get_rgba(
+      pattern :  LibCairo::Pattern*,
+      red : Float64*,
+      green : Float64*,
+      blue : Float64*,
+      alpha : Float64*
+    ) : LibCairo::Status
+
+    fun pattern_get_surface = cairo_pattern_get_surface(
+      pattern :  LibCairo::Pattern*,
+      surface : LibCairo::Surface**
+    ) : LibCairo::Status
+
+    fun pattern_get_color_stop_rgba = cairo_pattern_get_color_stop_rgba(
+      pattern :  LibCairo::Pattern*,
+      index : Int32,
+      offset : Float64*,
+      red : Float64*,
+      green : Float64*,
+      blue : Float64*,
+      alpha : Float64*
+    ) : LibCairo::Status
+
+    fun pattern_get_color_stop_count = cairo_pattern_get_color_stop_count(
+      pattern :  LibCairo::Pattern*,
+      count : Int32*
+    ) : LibCairo::Status
+
+    fun pattern_get_linear_points = cairo_pattern_get_linear_points(
+      pattern :  LibCairo::Pattern*,
+      x0 : Float64*,
+      y0 : Float64*,
+      x1 : Float64*,
+      y1 : Float64*
+    ) : LibCairo::Status
+
+    fun pattern_get_radial_circles = cairo_pattern_get_radial_circles(
+      pattern :  LibCairo::Pattern*,
+      x0 : Float64*,
+      y0 : Float64*,
+      r0 : Float64*,
+      x1 : Float64*,
+      y1 : Float64*,
+      r1 : Float64*
+    ) : LibCairo::Status
+
+    fun mesh_pattern_get_patch_count = cairo_mesh_pattern_get_patch_count(
+      pattern :  LibCairo::Pattern*,
+      count : UInt32*
+    ) : LibCairo::Status
+
+    fun mesh_pattern_get_path = cairo_mesh_pattern_get_path(
+      pattern :  LibCairo::Pattern*,
+      patch_num : UInt32
+    ) : LibCairo::Path*
+
+    fun mesh_pattern_get_corner_color_rgba = cairo_mesh_pattern_get_corner_color_rgba(
+      pattern :  LibCairo::Pattern*,
+      patch_num : UInt32,
+      corner_num : UInt32,
+      red : Float64*,
+      green : Float64*,
+      blue : Float64*,
+      alpha : Float64*
+    ) : LibCairo::Status
+
+    fun mesh_pattern_get_control_point = cairo_mesh_pattern_get_control_point(
+      pattern :  LibCairo::Pattern*,
+      patch_num : UInt32,
+      point_num : UInt32,
+      x : Float64*,
+      y : Float64*
+    ) : LibCairo::Status
+
+    fun pattern_set_extend = cairo_pattern_set_extend(
+      pattern : LibCairo::Pattern*,
+      extend : LibCairo::Extend
+    ) : Void
+
+    fun pattern_get_extend = cairo_pattern_get_extend(
+      pattern : LibCairo::Pattern*,
+    ) : LibCairo::Extend
+  
+    fun pattern_get_type = cairo_pattern_get_type(
+      pattern : LibCairo::Pattern*,
+    ) : LibCairo::PatternType
+
+    fun pattern_add_color_stop_rgb = cairo_pattern_add_color_stop_rgb(
+      pattern : LibCairo::Pattern*,
+      offset : Float64,
+      red : Float64,
+      green : Float64,
+      blue : Float64
+    ) : Void
+
+    fun pattern_add_color_stop_rgba = cairo_pattern_add_color_stop_rgba(
+      pattern : LibCairo::Pattern*,
+      offset : Float64,
+      red : Float64,
+      green : Float64,
+      blue : Float64,
+      alpha : Float64
+    ) : Void
+
+    fun mesh_pattern_begin_patch = cairo_mesh_pattern_begin_patch(
+      pattern : LibCairo::Pattern*,
+    ) : Void
+
+    fun mesh_pattern_end_patch = cairo_mesh_pattern_end_patch(
+      pattern : LibCairo::Pattern*,
+    ) : Void
+
+    fun mesh_pattern_curve_to = cairo_mesh_pattern_curve_to(
+      pattern : LibCairo::Pattern*,
+      x1 : Float64,
+      y1 : Float64,
+      x2 : Float64,
+      y2 : Float64,
+      x3 : Float64,
+      y3 : Float64
+    ) : Void
+
+    fun mesh_pattern_line_to = cairo_mesh_pattern_line_to(
+      pattern : LibCairo::Pattern*,
+      x : Float64,
+      y : Float64
+    ) : Void
+
+    fun mesh_pattern_move_to = cairo_mesh_pattern_move_to(
+      pattern : LibCairo::Pattern*,
+      x : Float64,
+      y : Float64
+    ) : Void
+
+    fun mesh_pattern_set_control_point = cairo_mesh_pattern_set_control_point(
+      pattern : LibCairo::Pattern*,
+      point_num : UInt32,
+      x : Float64,
+      y : Float64
+    ) : Void
+
+    fun mesh_pattern_set_corner_color_rgb = cairo_mesh_pattern_set_corner_color_rgb(
+      pattern : LibCairo::Pattern*,
+      corner_num : UInt32,
+      red : Float64,
+      green : Float64,
+      blue : Float64
+    ) : Void
+
+    fun mesh_pattern_set_corner_color_rgba = cairo_mesh_pattern_set_corner_color_rgba(
+      pattern : LibCairo::Pattern*,
+      corner_num : UInt32,
+      red : Float64,
+      green : Float64,
+      blue : Float64,
+      alpha : Float64
+    ) : Void
+
+    fun pattern_set_matrix = cairo_pattern_set_matrix(
+      pattern : LibCairo::Pattern*,
+      matrix : LibCairo::Matrix*
+    ) : Void
+
+    fun pattern_get_matrix = cairo_pattern_get_matrix(
+      pattern : LibCairo::Pattern*,
+      matrix : LibCairo::Matrix*
+    ) : Void
+
+    fun pattern_create_rgb = cairo_pattern_create_rgb(
+      red : Float64,
+      green : Float64,
+      blue : Float64
+    ) : LibCairo::Pattern*
+
+    fun pattern_create_rgba = cairo_pattern_create_rgba(
+      red : Float64,
+      green : Float64,
+      blue : Float64,
+      alpha : Float64
+    ) : LibCairo::Pattern*
+
+    fun pattern_create_for_surface = cairo_pattern_create_for_surface(
+      surface : LibCairo::Surface*
+    ) : LibCairo::Pattern*
+
+    fun pattern_create_linear = cairo_pattern_create_linear(
+      x0 : Float64,
+      y0 : Float64,
+      x1 : Float64,
+      y1 : Float64
+    ) : LibCairo::Pattern*
+
+    fun pattern_create_radial = cairo_pattern_create_radial(
+      cx0 : Float64,
+      cy0 : Float64,
+      radius0 : Float64,
+      cx1 : Float64,
+      cy1 : Float64,
+      radius1 : Float64
+    ) : LibCairo::Pattern*
+
+    fun pattern_create_mesh = cairo_pattern_create_mesh(
+    ) : LibCairo::Pattern*
+
+    fun pattern_reference = cairo_pattern_reference(
+      pattern : LibCairo::Pattern*
+    ) : LibCairo::Pattern*
+
+    fun pattern_destroy = cairo_pattern_destroy(
+      pattern : LibCairo::Pattern*
+    ) : Void
+
+    fun pattern_get_reference_count = cairo_pattern_get_reference_count(
+      pattern : LibCairo::Pattern*
+    ) : UInt32
+
+    fun pattern_status = cairo_pattern_status(
+      pattern : LibCairo::Pattern*
+    ) : LibCairo::Status
+
+    fun pattern_get_user_data = cairo_pattern_get_user_data(
+      pattern : LibCairo::Pattern*,
+      key : LibCairo::UserDataKey*
+    ) : Void*
+
+    fun pattern_set_user_data = cairo_pattern_set_user_data(
+      pattern : LibCairo::Pattern*,
+      key : LibCairo::UserDataKey*,
+      user_data : Void*,
+      destroy : DestroyFunc
+    ) : LibCairo::Status
+
+
+end

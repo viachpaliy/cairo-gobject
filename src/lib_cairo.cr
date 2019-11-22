@@ -40,6 +40,10 @@ lib LibCairo
 
   alias DestroyFunc = Void* -> Void
 
+  alias WriteFunc = Void*, UInt8*, UInt32 -> LibCairo::Status
+
+  alias ReadFunc = Void*, UInt8*, Int32 -> LibCairo::Status
+
   fun create = cairo_create(target : LibCairo::Surface*) : LibCairo::Context*
 
   fun reference = cairo_reference(cr : LibCairo::Context*) : LibCairo::Context*
@@ -1129,6 +1133,185 @@ lib LibCairo
       user_data : Void*,
       destroy : DestroyFunc
     ) : LibCairo::Status
+
+     # Surface manipulation
+
+    fun surface_create_similar = cairo_surface_create_similar(
+      other : LibCairo::Surface*,
+      content : LibCairo::Content,
+      width : Int32,
+      height : Int32
+    ) : LibCairo::Surface*
+
+    fun surface_create_similar_image = cairo_surface_create_similar_image(
+      other : LibCairo::Surface*,
+      format : LibCairo::Format,
+      width : Int32,
+      height : Int32
+    ) : LibCairo::Surface*
+
+    fun surface_map_to_image = cairo_surface_map_to_image(
+      surface : LibCairo::Surface*,
+      extents : LibCairo::RectangleInt*
+    ) : LibCairo::Surface*
+
+    fun surface_unmap_image = cairo_surface_unmap_image(
+      surface : LibCairo::Surface*,
+      image : LibCairo::Surface*
+    ) : Void
+
+    fun surface_create_for_rectangle = cairo_surface_create_for_rectangle(
+      target : LibCairo::Surface*,
+      x : Float64,
+      y : Float64,
+      width : Float64,
+      height : Float64
+    ) : LibCairo::Surface*
+
+    fun surface_reference = cairo_surface_reference(
+      surface : LibCairo::Surface*
+    ) : LibCairo::Surface*
+
+    fun surface_finish = cairo_surface_finish(
+      surface : LibCairo::Surface*
+    ) : Void
+
+    fun surface_destroy = cairo_surface_destroy(
+      surface : LibCairo::Surface*
+    ) : Void
+
+    fun surface_get_device = cairo_surface_get_device(
+      surface : LibCairo::Surface*
+    ) : LibCairo::Device*
+
+    fun surface_get_reference_count = cairo_surface_get_reference_count(
+      surface : LibCairo::Surface*
+    ) : UInt32
+
+    fun surface_status = cairo_surface_status(
+      surface : LibCairo::Surface*
+    ) : LibCairo::Status
+
+     fun surface_get_type = cairo_surface_get_type(
+      surface : LibCairo::Surface*
+    ) : LibCairo::SurfaceType
+
+    fun surface_get_content = cairo_surface_get_content(
+      surface : LibCairo::Surface*
+    ) : LibCairo::Content
+
+    fun surface_write_to_png = cairo_surface_write_to_png(
+      surface : LibCairo::Surface*,
+      filename : UInt8*
+    ) : LibCairo::Status
+
+    fun surface_write_to_png_stream = cairo_surface_write_to_png_stream(
+      surface : LibCairo::Surface*,
+      write_func : WriteFuncT,
+      closure : Void*
+    ) : LibCairo::Status
+
+        fun surface_get_user_data = cairo_surface_get_user_data(
+      surface : LibCairo::Surface*,
+      key : LibCairo::UserDataKey*
+    ) : Void*
+
+    fun surface_set_user_data = cairo_surface_set_user_data(
+      surface : LibCairo::Surface*,
+      key : LibCairo::UserDataKey,
+      user_data : Void*,
+      destroy : DestroyFunc
+    ) : LibCairo::Status
+
+    fun surface_get_mime_data = cairo_surface_get_mime_data(
+      surface : LibCairo::Surface*,
+      mime_type : UInt8*,
+      data : UInt8**,
+      length : UInt64*
+    ) : Void
+
+    fun surface_set_mime_data = cairo_surface_set_mime_data(
+      surface : LibCairo::Surface*,
+      mime_type : UInt8*,
+      data : UInt8*,
+      length : UInt64,
+      destroy : DestroyFunc,
+      closure : Void*
+    ) : LibCairo::Status
+
+    fun surface_supports_mime_type = cairo_surface_supports_mime_type(
+      surface : LibCairo::Surface*,
+      mime_type : UInt8*
+    ) : Int32
+
+    fun surface_get_font_options = cairo_surface_get_font_options(
+      surface : LibCairo::Surface*,
+      options : LibCairo::FontOptions*
+    ) : Void
+
+    fun surface_flush = cairo_surface_flush(
+      surface : LibCairo::Surface*
+    ) : Void
+
+    fun surface_mark_dirty = cairo_surface_mark_dirty(
+      surface : LibCairo::Surface*
+    ) : Void
+
+    fun surface_mark_dirty_rectangle = cairo_surface_mark_dirty_rectangle(
+      surface : LibCairo::Surface*,
+      x : Int32,
+      y : Int32,
+      width : Int32,
+      height : Int32
+    ) : Void
+
+    fun surface_set_device_scale = cairo_surface_set_device_scale(
+      surface : LibCairo::Surface*,
+      x_scale : Float64,
+      y_scale : Float64
+    ) : Void
+
+    fun surface_get_device_scale = cairo_surface_get_device_scale(
+      surface : LibCairo::Surface*,
+      x_scale : Float64*,
+      y_scale : Float64*
+    ) : Void
+
+    fun surface_set_device_offset = cairo_surface_set_device_offset(
+      surface : LibCairo::Surface*,
+      x_offset : Float64,
+      y_offset : Float64
+    ) : Void
+
+    fun surface_get_device_offset = cairo_surface_get_device_offset(
+      surface : LibCairo::Surface*,
+      x_offset : Float64*,
+      y_offset : Float64*
+    ) : Void
+
+    fun surface_set_fallback_resolution = cairo_surface_set_fallback_resolution(
+      surface : LibCairo::Surface*,
+      x_pixels_per_inch : Float64,
+      y_pixels_per_inch : Float64
+    ) : Void
+
+    fun surface_get_fallback_resolution = cairo_surface_get_fallback_resolution(
+      surface : LibCairo::Surface*,
+      x_pixels_per_inch : Float64*,
+      y_pixels_per_inch : Float64*
+    ) : Void
+
+    fun surface_copy_page = cairo_surface_copy_page(
+      surface : LibCairo::Surface*
+    ) : Void
+
+    fun surface_show_page = cairo_surface_show_page(
+      surface : LibCairo::Surface*
+    ) : Void
+
+    fun surface_has_show_text_glyphs = cairo_surface_has_show_text_glyphs(
+      surface : LibCairo::Surface*
+    ) : Int32
 
 
 

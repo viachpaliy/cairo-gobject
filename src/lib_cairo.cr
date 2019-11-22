@@ -30,13 +30,33 @@ lib LibCairo
     x, y : Float64
   end
 
+  struct TextExtents
+    x_bearing : Float64
+    y_bearing : Float64
+    width : Float64
+    height : Float64
+    x_advance : Float64
+    y_advance : Float64
+  end
+
+  struct FontExtents
+    ascent : Float64
+    descent : Float64
+    height : Float64
+    max_x_advance : Float64
+    max_y_advance : Float64
+  end
+
 
   union PathData
     header : LibCairo::PathDataHeader
     point : LibCairo::PathDataPoint
   end
 
-
+  struct TextCluster
+    num_bytes : Int32
+    num_glyphs : Int32
+  end
 
   alias DestroyFunc = Void* -> Void
 
@@ -51,6 +71,19 @@ lib LibCairo
   fun destroy = cairo_destroy(this : LibCairo::Context*)
 
   fun get_reference_count = cairo_get_reference_count(cr: LibCairo::Context*) : UInt32
+  
+  fun get_user_data = cairo_get_user_data(
+    cr : LibCairo::Context*,
+    key : LibCairo::UserDataKey*
+  ) : Void*
+
+    fun set_user_data = cairo_set_user_data(
+      cr : LibCairo::Context*,
+      key : LibCairo::UserDataKey*,
+      user_data : Void*,
+      destroy : DestroyFunc
+    ) : LibCairo::Status
+
   
   fun save = cairo_save(cr : LibCairo::Context*) : Void
 
@@ -564,6 +597,125 @@ lib LibCairo
     fun font_face_status = cairo_font_face_status(
       font_face : LibCairo::FontFace*
     ) : LibCairo::Status
+
+    fun font_face_get_type = cairo_font_face_get_type(
+      font_face : LibCairo::FontFace*
+    ) : LibCairo::FontType
+
+    fun font_face_get_user_data = cairo_font_face_get_user_data(
+      font_face : LibCairo::FontFace*,
+      key : LibCairo::UserDataKey*
+    ) : Void*
+
+    fun font_face_set_user_data = cairo_font_face_set_user_data(
+      font_face : LibCairo::FontFace*,
+      key : LibCairo::UserDataKey*,
+      user_data : Void*,
+      destroy : DestroyFunc
+    ) : LibCairo::Status
+
+    # Portable interface to general font features.
+
+    fun scaled_font_create = cairo_scaled_font_create(
+      font_face : LibCairo::FontFace*,
+      font_matrix : LibCairo::Matrix*,
+      ctm : LibCairo::Matrix*,
+      options : LibCairo::FontOptions*
+    ) : LibCairo::ScaledFont*
+
+    fun scaled_font_reference = cairo_scaled_font_reference(
+      scaled_font : LibCairo::ScaledFont*
+    ) : LibCairo::ScaledFont*
+
+    fun scaled_font_destroy = cairo_scaled_font_destroy(
+      scaled_font : LibCairo::ScaledFont*
+    ) : VoidFontTypeT
+
+    fun scaled_font_get_reference_count = cairo_scaled_font_get_reference_count(
+      scaled_font : LibCairo::ScaledFont*
+    ) : UInt32
+
+    fun scaled_font_status = cairo_scaled_font_status(
+      scaled_font : LibCairo::ScaledFont*
+    ) : LibCairo::Status
+
+    fun scaled_font_get_type = cairo_scaled_font_get_type(
+      scaled_font : LibCairo::ScaledFont*
+    ) : LibCairo::FontType
+
+    fun scaled_font_get_user_data = cairo_scaled_font_get_user_data(
+      scaled_font : LibCairo::ScaledFont*,
+      key : LibCairo::UserDataKey*
+    ) : Void*
+
+    fun scaled_font_set_user_data = cairo_scaled_font_set_user_data(
+      scaled_font : LibCairo::ScaledFont*,
+      key : LibCairo::UserDataKey*,
+      user_data : Void*,
+      destroy : DestroyFunc
+    ) : LibCairo::Status
+
+    fun scaled_font_extents = cairo_scaled_font_extents(
+      scaled_font : LibCairo::ScaledFont*,
+      extents : LibCairo::FontExtents*
+    ) : Void
+
+    fun scaled_font_text_extents = cairo_scaled_font_text_extents(
+      scaled_font : LibCairo::ScaledFont*,
+      utf8 : UInt8*,
+      extents : LibCairo::TextExtents*
+    ) : Void
+
+    fun scaled_font_glyph_extents = cairo_scaled_font_glyph_extents(
+      scaled_font : LibCairo::ScaledFont*,
+      glyphs : LibCairo::Glyph*,
+      num_glyphs : Int32,
+      extents : LibCairo::TextExtents*
+    ) : Void
+       
+    fun scaled_font_get_font_face = cairo_scaled_font_get_font_face(
+      scaled_font : LibCairo::ScaledFont*
+    ) : LibCairo::FontFace*
+
+    fun scaled_font_get_font_matrix = cairo_scaled_font_get_font_matrix(
+      scaled_font : LibCairo::ScaledFont*,
+      font_matrix : LibCairo::Matrix*
+    ) : Void
+
+    fun scaled_font_get_ctm = cairo_scaled_font_get_ctm(
+      scaled_font : LibCairo::ScaledFont*,
+      ctm : LibCairo::Matrix*
+    ) : Void
+
+    fun scaled_font_get_scale_matrix = cairo_scaled_font_get_scale_matrix(
+      scaled_font : LibCairo::ScaledFont*,
+      scale_matrix : LibCairo::Matrix*
+    ) : Void
+
+    fun scaled_font_get_font_options = cairo_scaled_font_get_font_options(
+      scaled_font : LibCairo::ScaledFont*,
+      options : LibCairo::FontOptions*
+    ) : Void
+
+    # Toy fonts
+
+    fun toy_font_face_create = cairo_toy_font_face_create(
+      family : UInt8*,
+      slant : LibCairo::FontSlant,
+      weight : LibCairo::FontWeight
+    ) : LibCairo::FontFace*
+
+    fun toy_font_face_get_family = cairo_toy_font_face_get_family(
+      font_face : LibCairo::FontFace*
+    ) : UInt8*
+
+    fun toy_font_face_get_slant = cairo_toy_font_face_get_slant(
+      font_face : LibCairo::FontFace*
+    ) : LibCairo::FontSlant
+
+    fun toy_font_face_get_weight = cairo_toy_font_face_get_weight(
+      font_face : LibCairo::FontFace*
+    ) : LibCairo::FontWeight
 
     ##########################################################
 

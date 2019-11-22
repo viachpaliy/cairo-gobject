@@ -27,7 +27,7 @@ class CairoApp
   def draw(context)
     context.set_source_rgb( 100, 100, 0) 
     context.select_font_face("Sans", Cairo::FontSlant::NORMAL , Cairo::FontWeight::NORMAL)
-    context.set_font_size(40) 
+    context.font_size=40 
     context.move_to(10,50)
     context.show_text("Cairo works!!!")
   end 

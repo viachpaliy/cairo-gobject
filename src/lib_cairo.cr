@@ -383,12 +383,7 @@ lib LibCairo
   fun glyph_allocate = cairo_glyph_allocate(num_glyphs : Int32) : LibCairo::Glyph*
 
   fun glyph_free = cairo_glyph_free(glyphs : LibCairo::Glyph*) : Void
-
-  struct TextCluster
-    num_bytes : Int32
-    num_glyphs : Int32
-  end
-
+ 
   fun text_cluster_allocate = cairo_text_cluster_allocate(
     num_clusters : Int32
   ) : LibCairo::TextCluster*
@@ -396,25 +391,8 @@ lib LibCairo
   fun text_cluster_free = cairo_text_cluster_free(
     clusters : LibCairo::TextCluster*
   ) : Void
-
-  struct TextExtents
-    x_bearing : Float64
-    y_bearing : Float64
-    width : Float64
-    height : Float64
-    x_advance : Float64
-    y_advance : Float64
-  end
-
-  struct FontExtents
-    ascent : Float64
-    descent : Float64
-    height : Float64
-    max_x_advance : Float64
-    max_y_advance : Float64
-  end
-
-   fun font_options_create = cairo_font_options_create(
+ 
+  fun font_options_create = cairo_font_options_create(
     ) : LibCairo::FontOptions*
 
     fun font_options_copy = cairo_font_options_copy(
@@ -629,7 +607,7 @@ lib LibCairo
 
     fun scaled_font_destroy = cairo_scaled_font_destroy(
       scaled_font : LibCairo::ScaledFont*
-    ) : VoidFontTypeT
+    ) : Void
 
     fun scaled_font_get_reference_count = cairo_scaled_font_get_reference_count(
       scaled_font : LibCairo::ScaledFont*
@@ -1168,72 +1146,72 @@ lib LibCairo
     # Query functions
 
     fun get_operator = cairo_get_operator(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : LibCairo::Operator
 
     fun get_source = cairo_get_source(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : LibCairo::Pattern*
 
     fun get_tolerance = cairo_get_tolerance(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : Float64
 
     fun get_antialias = cairo_get_antialias(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : LibCairo::Antialias
 
     fun has_current_point = cairo_has_current_point(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : Int32
 
     fun get_current_point = cairo_get_current_point(
-      cr : LibCairo::Contex*,
+      cr : LibCairo::Context*,
       x : Float64*,
       y : Float64*
     ) : Void
 
     fun get_fill_rule = cairo_get_fill_rule(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : LibCairo::FillRule
 
     fun get_line_width = cairo_get_line_width(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : Float64
 
     fun get_line_cap = cairo_get_line_cap(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : LibCairo::LineCap
 
     fun get_line_join = cairo_get_line_join(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : LibCairo::LineJoin
 
     fun get_miter_limit = cairo_get_miter_limit(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : Float64
 
     fun get_dash_count = cairo_get_dash_count(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : Int32
 
     fun get_dash = cairo_get_dash(
-      cr : LibCairo::Contex*,
+      cr : LibCairo::Context*,
       dashes : Float64*,
       offset : Float64*
     ) : Void
 
     fun get_matrix = cairo_get_matrix(
-      cr : LibCairo::Contex*,
+      cr : LibCairo::Context*,
       matrix : LibCairo::Matrix*
     ) : Void
 
     fun get_target = cairo_get_target(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : LibCairo::Surface*
 
     fun get_group_target = cairo_get_group_target(
-      cr : LibCairo::Contex*
+      cr : LibCairo::Context*
     ) : LibCairo::Surface*
 
     # Backend device manipulation
@@ -1359,7 +1337,7 @@ lib LibCairo
 
     fun surface_write_to_png_stream = cairo_surface_write_to_png_stream(
       surface : LibCairo::Surface*,
-      write_func : WriteFuncT,
+      write_func : WriteFunc,
       closure : Void*
     ) : LibCairo::Status
 

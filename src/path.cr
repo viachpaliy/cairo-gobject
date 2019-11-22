@@ -11,6 +11,11 @@ module Cairo
       @pointer.not_nil!.as(LibCairo::Path*)
     end
 
+    def finalize
+      LibCairo.path_destroy(@pointer)
+    end
+
+
   end
 end
 

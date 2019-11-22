@@ -21,6 +21,23 @@ lib LibCairo
     num_rectangles : Int32
   end
 
+  struct PathDataHeader
+    type : LibCairo::PathDataType
+    length : Int32
+  end
+
+  struct PathDataPoint
+    x, y : Float64
+  end
+
+
+  union PathData
+    header : LibCairo::PathDataHeader
+    point : LibCairo::PathDataPoint
+  end
+
+
+
   alias DestroyFunc = Void* -> Void
 
   fun create = cairo_create(target : LibCairo::Surface*) : LibCairo::Context*
@@ -964,6 +981,155 @@ lib LibCairo
       user_data : Void*,
       destroy : DestroyFunc
     ) : LibCairo::Status
+
+    fun copy_path = cairo_copy_path(
+      cr : LibCairo::Context*
+    ) : LibCairo::Path*
+
+    fun copy_path_flat = cairo_copy_path_flat(
+      cr : LibCairo::Context*
+    ) : LibCairo::Path*
+
+    fun append_path = cairo_append_path(
+      cr : LibCairo::Context*,
+      path : LibCairo::Path*
+    ) : Void
+
+    fun path_destroy = cairo_path_destroy(
+      path : LibCairo::Path*
+    ) : Void
+
+    # Error status queries
+
+    fun status = cairo_status(
+      cr : LibCairo::Context*
+    ) : LibCairo::Status
+
+    fun status_to_string = cairo_status_to_string(
+      status : LibCairo::Status
+    ) : UInt8*
+
+    # Query functions
+
+    fun get_operator = cairo_get_operator(
+      cr : LibCairo::Contex*
+    ) : LibCairo::Operator
+
+    fun get_source = cairo_get_source(
+      cr : LibCairo::Contex*
+    ) : LibCairo::Pattern*
+
+    fun get_tolerance = cairo_get_tolerance(
+      cr : LibCairo::Contex*
+    ) : Float64
+
+    fun get_antialias = cairo_get_antialias(
+      cr : LibCairo::Contex*
+    ) : LibCairo::Antialias
+
+    fun has_current_point = cairo_has_current_point(
+      cr : LibCairo::Contex*
+    ) : Int32
+
+    fun get_current_point = cairo_get_current_point(
+      cr : LibCairo::Contex*,
+      x : Float64*,
+      y : Float64*
+    ) : Void
+
+    fun get_fill_rule = cairo_get_fill_rule(
+      cr : LibCairo::Contex*
+    ) : LibCairo::FillRule
+
+    fun get_line_width = cairo_get_line_width(
+      cr : LibCairo::Contex*
+    ) : Float64
+
+    fun get_line_cap = cairo_get_line_cap(
+      cr : LibCairo::Contex*
+    ) : LibCairo::LineCap
+
+    fun get_line_join = cairo_get_line_join(
+      cr : LibCairo::Contex*
+    ) : LibCairo::LineJoin
+
+    fun get_miter_limit = cairo_get_miter_limit(
+      cr : LibCairo::Contex*
+    ) : Float64
+
+    fun get_dash_count = cairo_get_dash_count(
+      cr : LibCairo::Contex*
+    ) : Int32
+
+    fun get_dash = cairo_get_dash(
+      cr : LibCairo::Contex*,
+      dashes : Float64*,
+      offset : Float64*
+    ) : Void
+
+    fun get_matrix = cairo_get_matrix(
+      cr : LibCairo::Contex*,
+      matrix : LibCairo::Matrix*
+    ) : Void
+
+    fun get_target = cairo_get_target(
+      cr : LibCairo::Contex*
+    ) : LibCairo::Surface*
+
+    fun get_group_target = cairo_get_group_target(
+      cr : LibCairo::Contex*
+    ) : LibCairo::Surface*
+
+    # Backend device manipulation
+
+    fun device_reference = cairo_device_reference(
+      device : LibCairo::Device*
+    ) : LibCairo::Device*
+
+      fun device_get_type = cairo_device_get_type(
+      device : LibCairo::Device*
+    ) : LibCairo::DeviceType
+
+    fun device_status = cairo_device_status(
+      device : LibCairo::Device*
+    ) : LibCairo::Status
+
+    fun device_acquire = cairo_device_acquire(
+      device : LibCairo::Device*
+    ) : LibCairo::Status
+
+    fun device_release = cairo_device_release(
+      device : LibCairo::Device*
+    ) : Void
+
+    fun device_flush = cairo_device_flush(
+      device : LibCairo::Device*
+    ) : Void
+
+    fun device_finish = cairo_device_finish(
+      device : LibCairo::Device*
+    ) : Void
+
+    fun device_destroy = cairo_device_destroy(
+      device : LibCairo::Device*
+    ) : Void
+
+    fun device_get_reference_count = cairo_device_get_reference_count(
+      device : LibCairo::Device*
+    ) : UInt32
+
+    fun device_get_user_data = cairo_device_get_user_data(
+      device : LibCairo::Device*,
+      key : LibCairo::UserDataKey*
+    ) : Void*
+
+    fun device_set_user_data = cairo_device_set_user_data(
+      device : LibCairo::Device*,
+      key : LibCairo::UserDataKey*,
+      user_data : Void*,
+      destroy : DestroyFunc
+    ) : LibCairo::Status
+
 
 
 end

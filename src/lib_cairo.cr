@@ -64,6 +64,12 @@ lib LibCairo
 
   alias ReadFunc = Void*, UInt8*, Int32 -> LibCairo::Status
 
+  alias UserScaledFontInitFunc = LibCairo::ScaledFont*, LibCairo::Context*, LibCairo::FontExtents* -> LibCairo::Status
+
+  alias UserScaledFontRenderGlyphFunc = LibCairo::ScaledFont*, UInt64, LibCairo::Context*, LibCairo::TextExtents* -> LibCairo::Status
+
+  alias UserScaledFontUnicodeToGlyphFunc = LibCairo::ScaledFont*, UInt64, UInt64* -> LibCairo::Status
+  
   fun create = cairo_create(target : LibCairo::Surface*) : LibCairo::Context*
 
   fun reference = cairo_reference(cr : LibCairo::Context*) : LibCairo::Context*
@@ -695,6 +701,37 @@ lib LibCairo
       font_face : LibCairo::FontFace*
     ) : LibCairo::FontWeight
 
+    # User-font method setters
+
+    fun user_font_face_set_init_func = cairo_user_font_face_set_init_func(
+      font_face : LibCairo::FontFace*,
+      init_func : UserScaledFontInitFunc
+    ) : Void
+
+    fun user_font_face_set_render_glyph_func = cairo_user_font_face_set_render_glyph_func(
+      font_face : LibCairo::FontFace*,
+      render_glyph_func : UserScaledFontRenderGlyphFunc
+    ) : Void
+       
+    fun user_font_face_set_unicode_to_glyph_func = cairo_user_font_face_set_unicode_to_glyph_func(
+      font_face : LibCairo::FontFace*,
+      unicode_to_glyph_func : UserScaledFontUnicodeToGlyphFunc
+    ) : Void
+
+    # User-font method getters
+
+    fun user_font_face_get_init_func = cairo_user_font_face_get_init_func(
+      font_face : LibCairo::FontFace*
+    ) : UserScaledFontInitFunc
+
+    fun user_font_face_get_render_glyph_func = cairo_user_font_face_get_render_glyph_func(
+      font_face :LibCairo::FontFace*
+    ) : UserScaledFontRenderGlyphFunc
+       
+    fun user_font_face_get_unicode_to_glyph_func = cairo_user_font_face_get_unicode_to_glyph_func(
+      font_face : LibCairo::FontFace*
+    ) : UserScaledFontUnicodeToGlyphFunc
+         
     ##########################################################
 
     fun region_create = cairo_region_create() : LibCairo::Region*

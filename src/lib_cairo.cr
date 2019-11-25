@@ -725,7 +725,7 @@ lib LibCairo
     ) : UserScaledFontInitFunc
 
     fun user_font_face_get_render_glyph_func = cairo_user_font_face_get_render_glyph_func(
-      font_face :LibCairo::FontFace*
+      font_face : LibCairo::FontFace*
     ) : UserScaledFontRenderGlyphFunc
        
     fun user_font_face_get_unicode_to_glyph_func = cairo_user_font_face_get_unicode_to_glyph_func(

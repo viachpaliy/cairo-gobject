@@ -113,7 +113,7 @@ lib LibCairo
 
   fun set_source = cairo_set_source( 
     cr : LibCairo::Context*, 
-    source : LibCairo::PatternType 
+    source : LibCairo::Pattern* 
   ) : Void 
 
   fun set_source_rgb = cairo_set_source_rgb(

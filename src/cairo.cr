@@ -10,6 +10,6 @@ require "./context.cr"
 require "./scaled_font.cr"
 require "./path.cr"
 require "./module_functions.cr"
-require "./rectangle_int.cr"
 require "./pattern.cr"
+require "./status_exception.cr"
 

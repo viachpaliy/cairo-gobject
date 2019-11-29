@@ -1,15 +1,22 @@
 # cairo-gobject
 
-TODO: Write a description here
+Cairo binding for use with Gdk and Gtk widgets.
+Works with "gobject" shard (https://github.com/jhass/crystal-gobject).
+It is a fork "cairo-cr" shard (https://github.com/TamasSzekeres/cairo-cr)
 
 ## Installation
+
+First install cairo:
+```bash
+sudo apt-get install libcairo2 libcairo2-dev
+```
 
 1. Add the dependency to your `shard.yml`:
 
    ```yaml
    dependencies:
      cairo-gobject:
-       github: your-github-user/cairo-gobject
+       github: viachpaliy/cairo-gobject
    ```
 
 2. Run `shards install`
@@ -17,10 +24,19 @@ TODO: Write a description here
 ## Usage
 
 ```crystal
-require "cairo-gobject"
+require "gobject/gtk"
+require "cairo"
 ```
+For more details see the sample in [/samples](/samples) folder.
 
-TODO: Write usage instructions here
+## Samples
+
+Run sample :
+```shell
+  cd cairo-gobject
+  shards install
+  crystal run samples/sample_name.cr
+```
 
 ## Development
 

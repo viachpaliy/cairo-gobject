@@ -1,15 +1,5 @@
 module Cairo
   class FontOptions
-    include GObject::WrappedType
-
-    @pointer : Void*
-    def initialize(pointer : LibCairo::FontOptions*)
-      @pointer = pointer.as(Void*)
-    end
-
-    def to_unsafe
-      @pointer.not_nil!.as(LibCairo::FontOptions*)
-    end
 
     def finalize
       LibCairo.font_options_destroy(@pointer.as(LibCairo::FontOptions*))
@@ -71,7 +61,6 @@ module Cairo
       LibCairo.font_options_set_hint_metrics(@pointer.as(LibCairo::FontOptions*), LibCairo::HintMetrics.new(hint_metrics.value))
       self
     end
-
 
   end
 end

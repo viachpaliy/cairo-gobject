@@ -1,15 +1,5 @@
 module Cairo
   class Surface
-    include GObject::WrappedType
-
-    @pointer : Void*
-    def initialize(pointer : LibCairo::Surface*)
-      @pointer = pointer.as(Void*)
-    end
-
-    def to_unsafe
-      @pointer.not_nil!.as(LibCairo::Surface*)
-    end
     
     def finalize
       LibCairo.surface_destroy(@pointer.as(LibCairo::Surface*))
@@ -39,7 +29,6 @@ module Cairo
     def create_for_rectangle(x : Float64, y : Float64, width : Float64, height : Float64) : Surface
       Surface.new(LibCairo.surface_create_for_rectangle(@pointer, x, y, width, height))
     end
-
 
     def write_to_png( filename ) : Status
       __return_value = LibCairo.surface_write_to_png(@pointer.as(LibCairo::Surface*) , filename.to_unsafe)
@@ -183,7 +172,6 @@ module Cairo
     def stride : Int32
       LibCairo.image_surface_get_stride(@pointer)
     end
-
 
   end
 end

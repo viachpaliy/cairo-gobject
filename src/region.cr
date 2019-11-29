@@ -1,16 +1,6 @@
 module Cairo
   class Region
-    include GObject::WrappedType
-
-    @pointer : Void*
-    def initialize(pointer : LibCairo::Region*)
-      @pointer = pointer.as(Void*)
-    end
-
-    def to_unsafe
-      @pointer.not_nil!.as(LibCairo::Region*)
-    end
-
+ 
     def initialize
       @pointer = LibCairo.region_create
     end
@@ -118,7 +108,6 @@ module Cairo
       raise new StatusException.new(status) unless status.success?
       self
     end
-
 
   end
 end

@@ -1,15 +1,5 @@
 module Cairo
   class FontFace
-    include GObject::WrappedType
-
-    @pointer : Void*
-    def initialize(pointer : LibCairo::FontFace*)
-      @pointer = pointer.as(Void*)
-    end
-
-    def to_unsafe
-      @pointer.not_nil!.as(LibCairo::FontFace*)
-    end
 
     def finalize
       LibCairo.font_face_destroy(@pointer.as(LibCairo::FontFace*))
@@ -88,8 +78,6 @@ module Cairo
       LibCairo.user_font_face_set_unicode_to_glyph_func(@pointer.as(LibCairo::FontFace*), unicode_to_glyph_func)
       self
     end
-
-
 
   end
 end

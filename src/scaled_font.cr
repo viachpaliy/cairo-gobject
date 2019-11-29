@@ -1,15 +1,5 @@
 module Cairo
   class ScaledFont
-    include GObject::WrappedType
-
-    @pointer : Void*
-    def initialize(pointer : LibCairo::ScaledFont*)
-      @pointer = pointer.as(Void*)
-    end
-
-    def to_unsafe
-      @pointer.not_nil!.as(LibCairo::ScaledFont*)
-    end
 
     def finalize
       LibCairo.scaled_font_destroy(@pointer.as(LibCairo::ScaledFont*))
@@ -48,9 +38,7 @@ module Cairo
       LibCairo.scaled_font_text_extents(@pointer.as(LibCairo::ScaledFont*), text.to_unsafe, out text_extents)
       text_extents.as(LibCairo::TextExtents)
     end
-
-   
-
+ 
     def font_face : FontFace
       FontFace.new(LibCairo.scaled_font_get_font_face(@pointer.as(LibCairo::ScaledFont*)))
     end

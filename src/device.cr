@@ -1,17 +1,7 @@
 module Cairo
   class Device
-    include GObject::WrappedType
 
-    @pointer : Void*
-    def initialize(pointer : LibCairo::Device*)
-      @pointer = pointer.as(Void*)
-    end
-
-    def to_unsafe
-      @pointer.not_nil!.as(LibCairo::Device*)
-    end
-
-        def finalize
+    def finalize
       LibCairo.device_destroy(@pointer)
     end
 
@@ -57,7 +47,6 @@ module Cairo
     def set_user_data(key : LibCairo::UserDataKey, user_data : Void*, destroy : LibCairo::DestroyFunc) : Status
       Status.new(LibCairo.device_set_user_data(@pointer, key, user_data, destroy).value)
     end
-
 
   end
 end

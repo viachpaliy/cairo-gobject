@@ -1,15 +1,5 @@
 module Cairo
   class Pattern
-    include GObject::WrappedType
-
-    @pointer : Void*
-    def initialize(pointer : LibCairo::Pattern*)
-      @pointer = pointer.as(Void*)
-    end
-
-    def to_unsafe
-      @pointer.not_nil!.as(LibCairo::Pattern*)
-    end
 
     def finalize
       LibCairo.pattern_destroy(@pointer.as(LibCairo::Pattern*))
@@ -102,7 +92,6 @@ module Cairo
       LibCairo.pattern_set_filter(@pointer.as(LibCairo::Pattern*), LibCairo::Filter.new(filter.value))
       self
     end
-
 
   end
 end

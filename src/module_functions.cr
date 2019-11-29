@@ -1,16 +1,5 @@
 module Cairo
   
-  # Creates an image surface of the specified format and dimensions.
-  # Returns - a instance of Cairo::Surface. 
-  # Parameters :
-  #   *format* - format of pixels in the surface to create
-  #   *width* - width of the surface, in pixels
-  #   *height* - height of the surface, in pixels  
-  def self.image_surface_create(format : Cairo::Format, width, height) 
-    __return_value = LibCairo.image_surface_create(format, Int32.new(width), Int32.new(height))
-    Cairo::Surface.new(__return_value)
-  end
-  
   # Creates a PDF surface of the specified size in points to be written to *filename*. 
   # Returns - a instance of Cairo::Surface.
   # Parameters :

@@ -8,7 +8,7 @@ It is a fork "cairo-cr" shard (https://github.com/TamasSzekeres/cairo-cr)
 
 First install cairo:
 ```bash
-sudo apt-get install libcairo2 libcairo2-dev
+sudo apt-get install libcairo-gobject2
 ```
 
 1. Add the dependency to your `shard.yml`:

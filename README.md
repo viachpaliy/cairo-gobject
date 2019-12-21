@@ -1,8 +1,10 @@
 # cairo-gobject
 
 Cairo binding for use with Gdk and Gtk widgets.
-Works with "gobject" shard (https://github.com/jhass/crystal-gobject).
-It is a fork "cairo-cr" shard (https://github.com/TamasSzekeres/cairo-cr)
+It is extension for compile-time generated bindings to "libcairo-gobject2" library.
+This bindings is generated "gobject" shard (https://github.com/jhass/crystal-gobject).
+I used mainly code from "cairo-cr" shard ,
+so it is a fork "cairo-cr" shard (https://github.com/TamasSzekeres/cairo-cr)
 
 ## Installation
 

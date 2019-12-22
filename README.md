@@ -10,7 +10,7 @@ so it is a fork "cairo-cr" shard (https://github.com/TamasSzekeres/cairo-cr)
 
 First install cairo:
 ```bash
-sudo apt-get install libcairo-gobject2
+sudo apt-get install libgirepository1.0-dev libgtk-3-dev libcairo-gobject2 
 ```
 
 1. Add the dependency to your `shard.yml`:

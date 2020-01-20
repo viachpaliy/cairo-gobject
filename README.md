@@ -59,7 +59,8 @@ TODO: Write development instructions here
 ## Introduction
 Cairo-gobject is a Crystal shard for working with the Cairo library.
 It is a set of Crystal bindings to the Cairo C library.
-It closely matches the C API with the exception of cases, where more Crystal way is desirable. 
+It closely matches the C API with the exception of cases, where more Crystal way is desirable.
+
 ###Cairo
 Cairo is a library for creating 2D vector graphics. It is written in the C programming language.  
 Bindings for other computer languages exist, including Python, Perl, C++, C#, or Java.  
@@ -75,9 +76,9 @@ Cairo supports various backends. Backends are output devices for displaying the 
 This means that we can use the library to draw on Windows, Linux, Windows, OSX  
 and we can use the library to create PNG images, PDF files, PostScript files, and SVG files.   
 We can compare the Cairo library to the GDI+ library on Windows OS and the Quartz 2D on Mac OS.  
-Cairo is an open source software library. From version 2.8, Cairo is part of the GTK system.   
-###Definitions
+Cairo is an open source software library. From version 2.8, Cairo is part of the GTK system.  
 
+###Definitions
 Here we provide some useful definitions. To do some drawing in Cairo, we must first create a drawing *context*.  
 The drawing *context* holds all of the graphics state parameters that describe how drawing is to be done.  
 This includes information such as line width, color, the surface to draw to, and many other things.  

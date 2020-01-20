@@ -143,7 +143,8 @@ end
 app=CairoApp.new
 app.show_all
 ```
-The example pops up a GTK window on which we draw the "Cairo draw on a GTK window!" text. 
+The example pops up a GTK window on which we draw the "Cairo draw on a GTK window!" text.
+
 Gtk specifically has a convenience wrapper that starts the mainloop automatically:
 
 ```cr
@@ -185,4 +186,27 @@ We connect that signal to the `drawfun` callback:
 ```cr
 darea.connect "draw",&->drawfun
 ```
-The drawing is done inside the `drawfun` method. 
+The drawing is done inside the `drawfun` method.  
+We create a Cairo context from window :
+
+```cr
+context = Gdk.cairo_create(@window.window.not_nil!)
+```
+We draw our text in blue ink. The ink is specified with the `set_source_rgb` method:
+
+```cr
+context.set_source_rgb(0, 100, 0)
+```
+We choose a font type with the `select_font_face` method   
+and set its size with the `set_font_size` method: 
+
+```cr
+context.select_font_face("Sans", Cairo::FontSlant::NORMAL , Cairo::FontWeight::NORMAL)
+context.font_size=40 
+```
+We move to a position at x=10.0, y=50.0 and draw the text: 
+
+```cr
+context.move_to(10,50)
+context.show_text("Cairo draw on a GTK window!")
+```

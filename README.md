@@ -106,3 +106,83 @@ A *pattern* represents a *source* when drawing onto a *surface*. In Cairo, a *pa
 that you can read from and that is used as the *source* or *mask* of a drawing operation.  
 *Patterns* can be solid, surface-based, or gradients.
 
+### GTK Window  
+In the first example, we draw on a GTK window.  
+This backend will be used throughout the rest of the tutorial. 
+```cr
+require "gobject/gtk/autorun"
+require "../src/cairo"
+
+class CairoApp
+  @window : Gtk::Window
+  
+
+  delegate show_all, to: @window
+
+  def initialize
+    @window = Gtk::Window.new
+    @window.title = "Simple drawing"
+    @window.resize 250,150
+    @window.connect "destroy", &->Gtk.main_quit
+    darea = Gtk::DrawingArea.new
+    darea.connect "draw",&->drawfun 
+    @window.add darea
+  end
+
+  def drawfun
+    context = Gdk.cairo_create(@window.window.not_nil!)
+    context.set_source_rgb(0, 100, 0) 
+    context.select_font_face("Sans", Cairo::FontSlant::NORMAL , Cairo::FontWeight::NORMAL)
+    context.font_size=40 
+    context.move_to(10,50)
+    context.show_text("Cairo draw on a GTK window!")
+  end
+
+end
+
+app=CairoApp.new
+app.show_all
+```
+The example pops up a GTK window on which we draw the "Cairo draw on a GTK window!" text. 
+Gtk specifically has a convenience wrapper that starts the mainloop automatically:
+
+```cr
+require "gobject/gtk/autorun"
+```
+We import the Cairo module:
+
+```cr
+require "../src/cairo"
+```
+In the class’s constructor we create an empty window:
+
+```cr
+@window = Gtk::Window.new
+```
+We  tell it to set the value of the property title to "Simple drawing":
+
+```cr
+@window.title = "Simple drawing"
+```
+We set a size of window :
+```cr
+@window.resize 250,150
+```
+Followed by connecting to the window’s delete event to ensure that   
+the application is terminated if we click on the x to close the window:
+
+```cr
+@window.connect "destroy", &->Gtk.main_quit
+```
+We will be drawing on a Gtk.DrawingArea widget:
+
+```cr
+darea = Gtk::DrawingArea.new
+```
+When the window is redrawn, a `draw` signal is emitted.  
+We connect that signal to the `drawfun` callback:
+
+```cr
+darea.connect "draw",&->drawfun
+```
+The drawing is done inside the `drawfun` method. 

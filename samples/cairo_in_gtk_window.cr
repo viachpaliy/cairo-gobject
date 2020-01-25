@@ -10,7 +10,7 @@ class CairoApp
   def initialize
     @window = Gtk::Window.new
     @window.title = "Simple drawing"
-    @window.resize 250,150
+    @window.resize 600,150
     @window.connect "destroy", &->Gtk.main_quit
     darea = Gtk::DrawingArea.new
     darea.connect "draw",&->drawfun 
@@ -19,11 +19,11 @@ class CairoApp
 
   def drawfun
     context = Gdk.cairo_create(@window.window.not_nil!)
-    context.set_source_rgb(0, 100, 0) 
+    context.set_source_rgb(0, 0, 100) 
     context.select_font_face("Sans", Cairo::FontSlant::NORMAL , Cairo::FontWeight::NORMAL)
     context.font_size=40 
     context.move_to(10,50)
-    context.show_text("Cairo works!!!")
+    context.show_text("Cairo draw on a GTK window!")
   end
 
 end

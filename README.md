@@ -252,13 +252,13 @@ end
 
 app=CairoApp.new
 app.show_all
-```cr
+```
 
 This module is needed for the pi constant which is used to draw a circle. 
 
 ```cr
 require "math"
-```cr
+```
 
 We set a line width with the `line_width=` method.
 We set the source to some dark red color using the `set_source_rgb()` method. 
@@ -266,31 +266,31 @@ We set the source to some dark red color using the `set_source_rgb()` method.
 ```cr
 context.line_width=9
 context.set_source_rgb( 0.69, 0.19, 0)
-```cr
+```
 
 With the `translate()` method, we move the drawing origin to the center of the window.
 We want our circle to be centered.
 
 ```cr
 context.translate(200,150)
-```cr
+```
 
 The `arc()` method adds a new circular path to the Cairo drawing context. 
 
 ```cr
 context.arc(0,0,50,0,2*Math::PI)
-```cr
+```
 
 Finally, the `stroke_preserve()` method draws the outline of the circle.
 Unlike the `stroke()` method, it also preserves the shape for later drawing. 
 
 ```cr
 context.stroke_preserve
-```cr
+```
 
 We change the color for drawing and fill the circle with a new color using the `fill()` method.
 
 ```cr
 context.set_source_rgb( 0.30, 0.40, 0.60)
 context.fill
-```cr
+```

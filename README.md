@@ -210,3 +210,87 @@ We move to a position at x=10.0, y=50.0 and draw the text:
 context.move_to(10,50)
 context.show_text("Cairo draw on a GTK window!")
 ```
+
+### Fill and stroke
+
+The `stroke` operation draws the outlines of shapes and the `fill` operation fills the insides of shapes.  
+In the example, we draw a circle and fill it with a solid color. 
+
+```cr
+require "gobject/gtk/autorun"
+require "../src/cairo"
+require "math"
+
+class CairoApp
+  @window : Gtk::Window
+  
+
+  delegate show_all, to: @window
+
+  def initialize
+    @window = Gtk::Window.new
+    @window.title = "Simple drawing"
+    @window.resize 400,300
+    @window.connect "destroy", &->Gtk.main_quit
+    darea = Gtk::DrawingArea.new
+    darea.connect "draw",&->drawfun 
+    @window.add darea
+  end
+
+  def drawfun
+    context = Gdk.cairo_create(@window.window.not_nil!)
+    context.line_width=9
+    context.set_source_rgb( 0.69, 0.19, 0) 
+    context.translate(200,150)
+    context.arc(0,0,50,0,2*Math::PI)
+    context.stroke_preserve
+    context.set_source_rgb( 0.30, 0.40, 0.60)
+    context.fill
+  end
+
+end
+
+app=CairoApp.new
+app.show_all
+```cr
+
+This module is needed for the pi constant which is used to draw a circle. 
+
+```cr
+require "math"
+```cr
+
+We set a line width with the `line_width=` method.
+We set the source to some dark red color using the `set_source_rgb()` method. 
+
+```cr
+context.line_width=9
+context.set_source_rgb( 0.69, 0.19, 0)
+```cr
+
+With the `translate()` method, we move the drawing origin to the center of the window.
+We want our circle to be centered.
+
+```cr
+context.translate(200,150)
+```cr
+
+The `arc()` method adds a new circular path to the Cairo drawing context. 
+
+```cr
+context.arc(0,0,50,0,2*Math::PI)
+```cr
+
+Finally, the `stroke_preserve()` method draws the outline of the circle.
+Unlike the `stroke()` method, it also preserves the shape for later drawing. 
+
+```cr
+context.stroke_preserve
+```cr
+
+We change the color for drawing and fill the circle with a new color using the `fill()` method.
+
+```cr
+context.set_source_rgb( 0.30, 0.40, 0.60)
+context.fill
+```cr

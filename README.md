@@ -229,7 +229,7 @@ class CairoApp
 
   def initialize
     @window = Gtk::Window.new
-    @window.title = "Simple drawing"
+    @window.title = "Fill and stroke"
     @window.resize 400,300
     @window.connect "destroy", &->Gtk.main_quit
     darea = Gtk::DrawingArea.new
@@ -294,3 +294,56 @@ We change the color for drawing and fill the circle with a new color using the `
 context.set_source_rgb( 0.30, 0.40, 0.60)
 context.fill
 ```
+
+### Pen dashes
+
+Each line can be drawn with a different pen dash. A pen dash defines the style of the line.
+The dash pattern is specified by the `set_dash()` method.
+The pattern is set by the dash list which is a list of floating values.
+They set the on and off parts of the dash pattern.
+The dash is used by the `stroke()` method to create a line.
+If the number of dashes is 0, dashing is disabled.
+If the number of dashes is 1, a symmetric pattern is assumed with alternating on 
+and off portions of the size specified by the single value in dashes. 
+
+```cr
+  def drawfun
+    context = Gdk.cairo_create(@window.window.not_nil!)
+    context.set_source_rgb( 0.69, 0.19, 0) 
+    context.line_width=1.5
+    context.set_dash([4.0, 21.0, 2.0], 0)
+    context.move_to(40, 30)
+    context.line_to(200, 30)
+    context.stroke 
+    context.set_dash([14.0, 6.0], 0)
+    context.move_to(40,50)
+    context.line_to(200,50)
+    context.stroke
+    context.set_dash([1.0], 0)
+    context.move_to(40,70)
+    context.line_to(200,70)
+    context.stroke
+  end 
+```
+
+We draw three lines in three different pen dashes. 
+
+```cr
+context.set_dash([4.0, 21.0, 2.0], 0)
+```
+
+We have a pattern of three numbers. We have 4 points drawn, 21 not drawn, and 2 drawn,
+then 4 points not drawn, 21 points drawn. and 2 not drawn.
+This pattern takes turns until the end of the line. 
+
+```cr
+context.set_dash([14.0, 6.0], 0)
+```
+
+In this pattern, we have always 14 points drawn and 6 not drawn. 
+
+```cr
+context.set_dash([1.0], 0)
+```
+
+Here we create a pen dash of a symmetric pattern of alternating single on and off points.

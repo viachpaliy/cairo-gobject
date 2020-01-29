@@ -355,7 +355,7 @@ There are three different line cap styles in Cairo :
 * Cairo::LineCap::SQUARE
 * Cairo::LineCap::ROUND
 * Cairo::LineCap::BUTT
-![Line caps](https://raw.githubusercontent.com/viachpaliy/cairo-gobject/tree/master/samples/Image/linecaps.png)  
+![Line caps](https://raw.github.com/viachpaliy/cairo-gobject/tree/master/samples/Image/linecaps.png)  
 A line with a `Cairo::LINE_CAP_SQUARE` cap has a different size than a line with a `Cairo::LINE_CAP_BUTT` cap.
 If a line is x units wide, the line with a `Cairo::LINE_CAP_SQUARE` cap will be exactly x units greater in size;
 x/2 units at the beginning and x/2 units at the end. 

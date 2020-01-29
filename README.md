@@ -351,5 +351,68 @@ Here we create a pen dash of a symmetric pattern of alternating single on and of
 ### Line caps
 
 The line caps are end points of lines.   
-There are three different line cap styles in Cairo. 
-![Line caps](https://github.com/viachpaliy/cairo-gobject/tree/master/samples/Image/linecaps.png)
+There are three different line cap styles in Cairo :
+* Cairo::LineCap::SQUARE
+* Cairo::LineCap::ROUND
+* Cairo::LineCap::BUTT
+![Line caps](https://github.com/viachpaliy/cairo-gobject/tree/master/samples/Image/linecaps.png)  
+A line with a `Cairo::LINE_CAP_SQUARE` cap has a different size than a line with a `Cairo::LINE_CAP_BUTT` cap.
+If a line is x units wide, the line with a `Cairo::LINE_CAP_SQUARE` cap will be exactly x units greater in size;
+x/2 units at the beginning and x/2 units at the end. 
+
+```cr
+  def drawfun
+    context = Gdk.cairo_create(@window.window.not_nil!)
+    context.set_source_rgb( 0.3, 0.19, 0.4) 
+    context.line_width=10
+    context.line_cap=Cairo::LineCap::BUTT
+    context.move_to(30, 50)
+    context.line_to(150, 50)
+    context.stroke 
+    context.line_cap=Cairo::LineCap::ROUND
+    context.move_to(30, 90)
+    context.line_to(150, 90)
+    context.stroke
+    context.line_cap=Cairo::LineCap::SQUARE
+    context.move_to(30, 130)
+    context.line_to(150, 130)
+    context.stroke
+    context.line_width=1.5
+    context.move_to(30, 40)
+    context.line_to(30, 140)
+    context.stroke
+    context.move_to(150, 40)
+    context.line_to(150, 140)
+    context.stroke
+    context.move_to(155, 40)
+    context.line_to(155, 140)
+    context.stroke
+  end 
+```
+
+The example draws three lines with three different line caps.
+It will also graphically demonstrate the differences in size of the lines by drawing three additional thin vertical lines.
+
+```cr
+ context.line_width=10
+```
+
+Our lines will be 10 px wide. 
+
+```cr
+  context.line_cap=Cairo::LineCap::ROUND
+  context.move_to(30, 90)
+  context.line_to(150, 90)
+  context.stroke 
+```
+
+Here we draw a horizontal line with a `Cairo::LINE_CAP_ROUND` cap. 
+
+```cr
+ context.line_width=1.5
+ context.move_to(30, 40)
+ context.line_to(30, 140)
+ context.stroke
+```
+
+This is one of the three vertical lines used to demostrate the differences in size.

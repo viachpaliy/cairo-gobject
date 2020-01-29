@@ -29,7 +29,7 @@ class CairoApp
     context.rectangle(30, 30, 100, 100)
     context.line_width=14
     context.line_join=Cairo::LineJoin::MITER
-    context.stroke 
+    context.stroke
     context.rectangle(160, 30, 100, 100)
     context.line_width=14
     context.line_join=Cairo::LineJoin::BEVEL

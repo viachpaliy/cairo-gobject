@@ -354,7 +354,7 @@ The line caps are end points of lines.
 There are three different line cap styles in Cairo :
 * Cairo::LineCap::SQUARE
 * Cairo::LineCap::ROUND
-* Cairo::LineCap::BUTT
+* Cairo::LineCap::BUTT  
 ![Line caps](images/linecaps.png)  
 A line with a `Cairo::LINE_CAP_SQUARE` cap has a different size than a line with a `Cairo::LINE_CAP_BUTT` cap.
 If a line is x units wide, the line with a `Cairo::LINE_CAP_SQUARE` cap will be exactly x units greater in size;
@@ -416,3 +416,44 @@ Here we draw a horizontal line with a `Cairo::LINE_CAP_ROUND` cap.
 ```
 
 This is one of the three vertical lines used to demostrate the differences in size.
+
+### Line joins
+
+The lines can be joined using three different join styles :
+* Cairo::LineJoin::BEVEL
+* Cairo::LineJoin::ROUND
+* Cairo::LineJoin::MITER  
+![Line joins](images/linejoins.jpg)
+
+```cr
+  def drawfun
+    context = Gdk.cairo_create(@window.window.not_nil!)
+    context.set_source_rgb( 0.3, 0.19, 0.4)
+	context.line_width=14
+    context.rectangle(30, 30, 100, 100)
+    context.line_join=Cairo::LineJoin::MITER
+	context.stroke 
+    context.rectangle(160, 30, 100, 100)
+	context.line_join=Cairo::LineJoin::BEVEL
+    context.stroke
+    context.rectangle(100, 160, 100, 100)
+    context.line_join=Cairo::LineJoin::ROUND
+    context.stroke
+  end 
+```
+
+In this example, we draw three thick rectangles with various line joins. 
+
+```cr
+  context.line_width=14
+```
+
+The lines are 14 px wide. 
+
+```cr
+    context.rectangle(30, 30, 100, 100)
+    context.line_join=Cairo::LineJoin::MITER
+	context.stroke 
+```
+
+Here we draw a rectangle with cairo.LINE_JOIN_MITER join style. 

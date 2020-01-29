@@ -429,12 +429,12 @@ The lines can be joined using three different join styles :
   def drawfun
     context = Gdk.cairo_create(@window.window.not_nil!)
     context.set_source_rgb( 0.3, 0.19, 0.4)
-	context.line_width=14
+    context.line_width=14
     context.rectangle(30, 30, 100, 100)
     context.line_join=Cairo::LineJoin::MITER
-	context.stroke 
+    context.stroke 
     context.rectangle(160, 30, 100, 100)
-	context.line_join=Cairo::LineJoin::BEVEL
+    context.line_join=Cairo::LineJoin::BEVEL
     context.stroke
     context.rectangle(100, 160, 100, 100)
     context.line_join=Cairo::LineJoin::ROUND
@@ -453,7 +453,7 @@ The lines are 14 px wide.
 ```cr
     context.rectangle(30, 30, 100, 100)
     context.line_join=Cairo::LineJoin::MITER
-	context.stroke 
+    context.stroke 
 ```
 
 Here we draw a rectangle with cairo.LINE_JOIN_MITER join style. 

@@ -347,3 +347,9 @@ context.set_dash([1.0], 0)
 ```
 
 Here we create a pen dash of a symmetric pattern of alternating single on and off points.
+
+### Line caps
+
+The line caps are end points of lines.   
+There are three different line cap styles in Cairo. 
+![Line caps](https://github.com/viachpaliy/cairo-gobject/tree/master/samples/Image/linecaps.png)

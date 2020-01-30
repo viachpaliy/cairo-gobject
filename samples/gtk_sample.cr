@@ -32,12 +32,22 @@ class CairoApp
     btn6.on_clicked { transparent }
     bbox.pack_start(btn6, expand = true, fill = true, padding = 2)
     darea = Gtk::DrawingArea.new
+    darea.connect "draw",&->draw_white_rect 
     hb.add bbox
     hb.add darea
     @window.add hb
   end
 
+  def draw_white_rect
+    context = Gdk.cairo_create(@window.window.not_nil!)
+    context.set_source_rgb( 1.0, 1.0, 1.0)
+    context.rectangle(140, 0, 360, 300)
+    context.stroke_preserve
+    context.fill
+  end
+
   def draw_text
+    draw_white_rect
     context = Gdk.cairo_create(@window.window.not_nil!)
     context.set_source_rgb(0, 0, 100) 
     context.select_font_face("Sans", Cairo::FontSlant::NORMAL , Cairo::FontWeight::NORMAL)
@@ -46,7 +56,8 @@ class CairoApp
     context.show_text("Cairo draw text!")
   end
 
- def fill_and_stroke
+  def fill_and_stroke
+    draw_white_rect
     context = Gdk.cairo_create(@window.window.not_nil!)
     context.line_width=9
     context.set_source_rgb( 0.69, 0.19, 0) 
@@ -57,7 +68,8 @@ class CairoApp
     context.fill
   end 
 
-def line_caps
+  def line_caps
+    draw_white_rect
     context = Gdk.cairo_create(@window.window.not_nil!)
     context.set_source_rgb( 0.3, 0.19, 0.4) 
     context.line_width= 20
@@ -90,6 +102,7 @@ def line_caps
   end 
 
   def line_joins
+    draw_white_rect
     context = Gdk.cairo_create(@window.window.not_nil!)
     context.set_source_rgb( 0.3, 0.19, 0.4) 
     context.rectangle(230, 30, 100, 100)
@@ -106,7 +119,8 @@ def line_caps
     context.stroke
   end 
 
-def pen_dashes
+  def pen_dashes
+    draw_white_rect 
     context = Gdk.cairo_create(@window.window.not_nil!)
     context.set_source_rgb( 0.69, 0.19, 0) 
     dashed1 = [4.0, 21.0, 2.0]
@@ -128,6 +142,7 @@ def pen_dashes
   end 
 
   def transparent
+    draw_white_rect
     context = Gdk.cairo_create(@window.window.not_nil!)
     i=1
     while i < 10

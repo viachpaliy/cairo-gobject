@@ -41,7 +41,7 @@ class CairoApp
   def draw_white_rect
     context = Gdk.cairo_create(@window.window.not_nil!)
     context.set_source_rgb( 1.0, 1.0, 1.0)
-    context.rectangle(140, 0, 360, 300)
+    context.rectangle(140, 0, 460, 300)
     context.stroke_preserve
     context.fill
   end

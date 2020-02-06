@@ -1,6 +1,10 @@
 module Cairo
   class Context
-   
+
+    def self.create(target : Cairo::Surface)  
+      Cairo::Context.new LibCairo.create(target.to_unsafe())
+    end 
+       
     def finalize
       LibCairo.destroy(@pointer.as(LibCairo::Context*))
     end

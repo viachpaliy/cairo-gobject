@@ -94,6 +94,20 @@ require "./status_exception.cr"
 #   SUBSURFACE = 23       The surface is a subsurface created with `Surface#create_for_rectangle()`, since 1.10
 #   COGL = 24             The surface is of type COGL
 
+# enum DeviceType is generated "crystal-gobject" in compile time.
+# DeviceType is used to describe the type of a given device. The devices types are also known as "backends" within cairo.
+#   ZERO_NONE = 0
+#   DRM = 0         The device is of type Direct Render Manager
+#   GL = 1          The device is of type OpenGL
+#   SCRIPT = 2      The device is of type script
+#   XCB = 3         The device is of type xcb 
+#   XLIB = 4        The device is of type xlib
+#   XML = 5         The device is of type xml
+#   COGL = 6   
+#   WIN32 = 7
+#   INVALID = -1
+
+
 
 
 

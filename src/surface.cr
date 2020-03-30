@@ -64,6 +64,7 @@ module Cairo
     end
 
     # Increases the reference count on surface by one.
+    # Returns : the referenced Cairo::Surface.
     def reference : Surface
       Surface.new(LibCairo.surface_reference(@pointer))
     end

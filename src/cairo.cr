@@ -107,7 +107,59 @@ require "./status_exception.cr"
 #   WIN32 = 7
 #   INVALID = -1
 
+# enum FontType is generated "crystal-gobject" in compile time.
+# FontType is used to describe the type of a given font face or scaled font.
+# The font types are also known as "font backends" within cairo.
+#   ZERO_NONE = 0
+#   TOY = 0        The font was created using cairo's toy font api 
+#   FT = 1         The font is of type FreeType 
+#   WIN32 = 2      The font is of type Win32 
+#   QUARTZ = 3     The font is of type Quartz (Since: 1.6) 
+#   USER = 4       The font was create using cairo's user font api (Since: 1.8)
 
+# enum Antialias is generated "crystal-gobject" in compile time.
+# Specifies the type of antialiasing to do when rendering text or shapes.
+#   ZERO_NONE = 0
+#   DEFAULT = 0     Use the default antialiasing for the subsystem and target device 
+#   NONE = 1        Use a bilevel alpha mask
+#   GRAY = 2        Perform single-color antialiasing (using shades of gray for black text on a white background, for example). 
+#   SUBPIXEL = 3    Perform antialiasing by taking advantage of the order of subpixel elements on devices such as LCD panels 
+#   FAST = 4
+#   GOOD = 5
+#   BEST = 6
+
+# enum SubpixelOrder is generated "crystal-gobject" in compile time.
+# The subpixel order specifies the order of color elements within each pixel on the display device
+# when rendering with an antialiasing mode of Cairo::Antialias::SUBPIXEL.
+#   ZERO_NONE = 0
+#   DEFAULT = 0    Use the default subpixel order for for the target device 
+#   RGB = 1        Subpixel elements are arranged horizontally with red at the left 
+#   BGR = 2        Subpixel elements are arranged horizontally with blue at the left 
+#   VRGB = 3       Subpixel elements are arranged vertically with red at the top
+#   VBGR = 4       Subpixel elements are arranged vertically with blue at the top
+
+# enum HintStyle is generated "crystal-gobject" in compile time.
+# Specifies the type of hinting to do on font outlines.
+# Hinting is the process of fitting outlines to the pixel grid in order to improve the appearance of the result.
+# Since hinting outlines involves distorting them, it also reduces the faithfulness to the original outline shapes.
+# Not all of the outline hinting styles are supported by all font backends.
+#   ZERO_NONE = 0
+#   DEFAULT = 0      Use the default hint style for font backend and target device 
+#   NONE = 1         Do not hint outlines
+#   SLIGHT = 2       Hint outlines slightly to improve contrast while retaining good fidelity to the original shapes.  
+#   MEDIUM = 3       Hint outlines with medium strength giving a compromise between fidelity to the original shapes and contrast
+#   FULL = 4         Hint outlines to maximize contrast
+
+# enum HintMetrics is generated "crystal-gobject" in compile time.
+# Specifies whether to hint font metrics; hinting font metrics means quantizing them so that they are integer values in device space.
+# Doing this improves the consistency of letter and line spacing,
+# however it also means that text will be laid out differently at different zoom factors.
+#   ZERO_NONE = 0
+#   DEFAULT = 0      Hint metrics in the default manner for the font backend and target device
+#   OFF = 1          Do not hint font metrics  
+#   ON = 2           Hint font metrics
+
+ 
 
 
 

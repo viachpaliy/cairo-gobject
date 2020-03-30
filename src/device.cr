@@ -78,8 +78,8 @@ module Cairo
 
     # Attach user data to device. To remove user data from a surface, call this function with the key that was used to set it and NULL for data.
     # *key* : the address of a LibCairo::UserDataKey to attach the user data to.
-    # *user_data* :  the user data to attach to the surface.
-    # *destroy* : a LibCairo::DestroyFunc which will be called when the surface is destroyed or when new user data is attached using the same key.
+    # *user_data* :  the user data to attach to the device.
+    # *destroy* : a LibCairo::DestroyFunc which will be called when the device is destroyed or when new user data is attached using the same key.
     # Returns : Cairo::Status::SUCCESS or Cairo::Status::NO_MEMORY if a slot could not be allocated for the user data.
     def set_user_data(key : LibCairo::UserDataKey, user_data : Void*, destroy : LibCairo::DestroyFunc) : Status
       Status.new(LibCairo.device_set_user_data(@pointer, key, user_data, destroy).value)

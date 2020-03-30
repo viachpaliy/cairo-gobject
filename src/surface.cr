@@ -118,7 +118,7 @@ module Cairo
 
     # Returns user data previously attached to surface using the specified key.
     # If no user data has been attached with the given key this function returns nil.
-    # *key* : the address of the LibCairo::UserDataKey the user data was attached to 
+    # *key* : the address of the LibCairo::UserDataKey the user data was attached to. 
     def user_data(key : LibCairo::UserDataKey*) : Void*
       LibCairo.surface_get_user_data(@pointer, key)
     end

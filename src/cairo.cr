@@ -12,6 +12,7 @@ require "./path.cr"
 require "./module_functions.cr"
 require "./pattern.cr"
 require "./status_exception.cr"
+require "./rectangle_int.cr"
 
 # enum Content is generated "crystal-gobject" in compile time.
 # Content is used to describe the content that a surface will contain, whether color information, alpha information (translucence vs. opacity), or both.

@@ -3,9 +3,17 @@ module Cairo
   # Class for generic matrix operations
   class Matrix
 
-    def initialize 
-      @pointer = LibCairo::Matrix.new 
-    end 
+    def self.new(xx : Float64|Nil = nil, yx : Float64|Nil = nil, xy : Float64|Nil = nil, yy : Float64|Nil = nil, x0 : Float64|Nil = nil, y0 : Float64|Nil = nil) : self
+      ptr = Pointer(UInt8).malloc(48, 0u8)
+      new(ptr.as(LibCairo::Matrix*)).tap do |object|
+        object.xx = xx unless xx.nil?
+        object.xy = xy unless xy.nil?
+        object.yx = yx unless yx.nil?
+        object.yy = yy unless yy.nil?
+        object.x0 = x0 unless x0.nil?
+        object.y0 = y0 unless y0.nil?
+      end
+    end
 
     # Sets matrix to be the affine transformation given by xx, yx, xy, yy, x0, y0.
     # The transformation is given by:
@@ -128,6 +136,66 @@ module Cairo
     # *y* : Y position. An in/out parameter 
     def transform_point(x : Float64*, y : Float64*) : Void
       LibCairo.matrix_transform_point(to_unsafe,x,y)
+    end
+
+    # Returns xx component of the affine transformation.
+    def xx
+      (to_unsafe.as(LibCairo::Matrix*).value.xx)
+    end
+
+    # Sets xx component of the affine transformation.
+    def xx=(value : Float64)
+      to_unsafe.as(LibCairo::Matrix*).value.xx = Float64.new(value)
+    end
+
+    # Returns xy component of the affine transformation.
+    def xy
+      (to_unsafe.as(LibCairo::Matrix*).value.xy)
+    end
+
+    # Sets xy component of the affine transformation.
+    def xy=(value : Float64)
+      to_unsafe.as(LibCairo::Matrix*).value.xy = Float64.new(value)
+    end
+
+    # Returns yx component of the affine transformation.
+    def yx
+      (to_unsafe.as(LibCairo::Matrix*).value.yx)
+    end
+
+    # Sets yx component of the affine transformation.
+    def yx=(value : Float64)
+      to_unsafe.as(LibCairo::Matrix*).value.yx = Float64.new(value)
+    end
+
+    # Returns yy component of the affine transformation.
+    def yy
+      (to_unsafe.as(LibCairo::Matrix*).value.yy)
+    end
+
+    # Sets yy component of the affine transformation.
+    def yy=(value : Float64)
+      to_unsafe.as(LibCairo::Matrix*).value.yy = Float64.new(value)
+    end
+
+    # Returns X translation component of the affine transformation.
+    def x0
+      (to_unsafe.as(LibCairo::Matrix*).value.x0)
+    end
+
+    # Sets X translation component of the affine transformation.
+    def x0=(value : Float64)
+      to_unsafe.as(LibCairo::Matrix*).value.x0 = Float64.new(value)
+    end
+
+    # Returns Y translation component of the affine transformation.
+    def y0
+      (to_unsafe.as(LibCairo::Matrix*).value.y0)
+    end
+
+    # Sets Y translation component of the affine transformation.
+    def y0=(value : Float64)
+      to_unsafe.as(LibCairo::Matrix*).value.y0 = Float64.new(value)
     end
 
   end

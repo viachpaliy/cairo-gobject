@@ -3,6 +3,17 @@ module Cairo
   # The font options specify how fonts should be rendered.
   class FontOptions
 
+    include GObject::WrappedType
+
+    @pointer : Void*
+    def initialize(pointer : LibCairo::FontOptions*)
+      @pointer = pointer.as(Void*)
+    end
+
+    def to_unsafe
+      @pointer.not_nil!.as(LibCairo::FontOptions*)
+    end
+
     def finalize
       LibCairo.font_options_destroy(@pointer.as(LibCairo::FontOptions*))
     end

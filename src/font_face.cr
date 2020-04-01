@@ -3,6 +3,17 @@ module Cairo
   # Represents a particular font at a particular weight, slant, and other characteristic but no size, transformation, or size. 
   class FontFace
 
+    include GObject::WrappedType
+
+    @pointer : Void*
+    def initialize(pointer : LibCairo::FontFace*)
+      @pointer = pointer.as(Void*)
+    end
+
+    def to_unsafe
+      @pointer.not_nil!.as(LibCairo::FontFace*)
+    end
+
     def finalize
       LibCairo.font_face_destroy(@pointer.as(LibCairo::FontFace*))
     end

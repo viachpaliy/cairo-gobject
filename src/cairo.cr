@@ -12,9 +12,6 @@ require "./path.cr"
 require "./module_functions.cr"
 require "./pattern.cr"
 require "./status_exception.cr"
-require "./pattern_type.cr"
-require "./extend.cr"
-require "./filter.cr"
 
 # enum Content is generated "crystal-gobject" in compile time.
 # Content is used to describe the content that a surface will contain, whether color information, alpha information (translucence vs. opacity), or both.
@@ -162,7 +159,27 @@ require "./filter.cr"
 #   OFF = 1          Do not hint font metrics  
 #   ON = 2           Hint font metrics
 
- 
+# enum PatternType is generated "crystal-gobject" in compile time.
+# PatternType is used to describe the type of a given pattern.
+#   SOLID    -  The pattern is a solid (uniform) color. It may be opaque or translucent.
+#   SURFACE  -  The pattern is a based on a surface (an image).
+#   LINEAR   -  The pattern is a linear gradient. 
+#   RADIAL   -  The pattern is a radial gradient. 
 
+# enum Filter is generated "crystal-gobject" in compile time.
+# Filter is used to indicate what filtering should be applied when reading pixel values from patterns.
+#    FAST      - a high-performance filter, with quality similar to Cairo::Filter::NEAREST 
+#    GOOD       - a reasonable-performance filter, with quality similar to Cairo::Filter::BILINEAR
+#    BEST       - the highest-quality available, performance may not be suitable for interactive use. 
+#    NEAREST    - nearest-neighbor filtering. 
+#    BILINEAR   - linear interpolation in two dimensions. 
+#    GAUSSIAN   - this filter value is currently unimplemented, and should not be used in current code. 
 
-
+# enum Extend is generated "crystal-gobject" in compile time.
+# Extend is used to describe how pattern color/alpha will be determined for areas "outside" the pattern's natural area,
+# (for example, outside the surface bounds or outside the gradient geometry). 
+# The default extend mode is Cairo::Extend::NONE for surface patterns and Cairo::Extend::PAD for gradient patterns. 
+#    NONE      -  pixels outside of the source pattern are fully transparent
+#    REPEAT    -  the pattern is tiled by repeating
+#    REFLECT   -  the pattern is tiled by reflecting at the edges (Implemented for surface patterns since 1.6) 
+#    PAD       -  pixels outside of the pattern copy the closest pixel from the source (Since 1.2; but only implemented for surface patterns since 1.6) 

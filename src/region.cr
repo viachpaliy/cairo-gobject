@@ -73,9 +73,9 @@ module Cairo
 
     # Checks whether rectangle is inside, outside or partially contained in region.
     # *rectangle* : a Cairo::RectangleInt.
-    # Returns : Cairo::Region::OVERLAP_IN if rectangle is entirely inside region,
-    # Cairo::Region::OVERLAP_OUT if rectangle is entirely outside region,
-    # or Cairo::Region::OVERLAP_PART if rectangle is partially inside and partially outside region. 
+    # Returns : Cairo::Region::IN if rectangle is entirely inside region,
+    # Cairo::Region::OUT if rectangle is entirely outside region,
+    # or Cairo::Region::PART if rectangle is partially inside and partially outside region. 
     def contains?(rectangle : RectangleInt) : RegionOverlap
       RegionOverlap.new(LibCairo.region_contains_rectangle(@pointer, rectangle.to_unsafe).value)
     end

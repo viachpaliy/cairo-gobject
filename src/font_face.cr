@@ -47,7 +47,7 @@ module Cairo
       LibCairo.font_face_get_user_data(@pointer.as(LibCairo::FontFace*), key)
     end
 
-    # Attach user data to Font_Face. To remove user data from a font face, call this function with the key that was used to set it and nil for data.
+    # Attach user data to Font_Face. To remove user data from a font face, call this method with the key that was used to set it and nil for data.
     # *key* : the address of a LibCairo::UserDataKey to attach the user data to.
     # *user_data* :  the user data to attach to the FontFace.
     # *destroy* : a LibCairo::DestroyFunc which will be called when the FontFace is destroyed or when new user data is attached using the same key.

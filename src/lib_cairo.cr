@@ -1,9 +1,16 @@
 @[Link("cairo-gobject")]
 lib LibCairo
 
-  ###########################################
-  ##    Functions
-  ###########################################
+  # Version for Ubuntu 19.10 and gir1.2-freedesktop(1.62.0-1)
+  # For Linux Mint 19 and Ubuntu 18.04 uncomment Rectangle struct
+
+  #struct Rectangle 
+  #  x : Float64
+  #  y : Float64
+  #  width : Float64
+  #  height : Float64
+  #end
+  
 
   struct UserDataKey
     unused : Int32
@@ -57,6 +64,10 @@ lib LibCairo
     num_bytes : Int32
     num_glyphs : Int32
   end
+
+  ###########################################
+  ##    Functions
+  ###########################################
 
   alias DestroyFunc = Void* -> Void
 

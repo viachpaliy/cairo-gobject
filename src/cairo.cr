@@ -183,4 +183,11 @@ require "./rectangle_int.cr"
 #    NONE      -  pixels outside of the source pattern are fully transparent
 #    REPEAT    -  the pattern is tiled by repeating
 #    REFLECT   -  the pattern is tiled by reflecting at the edges (Implemented for surface patterns since 1.6) 
-#    PAD       -  pixels outside of the pattern copy the closest pixel from the source (Since 1.2; but only implemented for surface patterns since 1.6) 
+#    PAD       -  pixels outside of the pattern copy the closest pixel from the source (Since 1.2; but only implemented for surface patterns since 1.6)
+
+# enum RegionOverlap is generated "crystal-gobject" in compile time.
+# RegionOverlap is used as the return value for `Cairo::Region#contains?(rectangle : RectangleInt)`.
+#    OVERLAP_IN   -  The contents are entirely inside the region.  
+#    OVERLAP_OUT  -  The contents are entirely outside the region.  
+#    OVERLAP_PART -  The contents are partially inside and partially outside the region.  
+

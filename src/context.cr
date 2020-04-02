@@ -1,6 +1,11 @@
 module Cairo
+
+  # The cairo drawing context.
   class Context
 
+    # Creates a new Context with all graphics state parameters set to default values and with target as a target surface.
+    # The target surface should be constructed with a backend-specific method.
+    # *target* : a target surface for the context.
     def self.create(target : Cairo::Surface)  
       Cairo::Context.new LibCairo.create(target.to_unsafe())
     end 
@@ -8,47 +13,107 @@ module Cairo
     def finalize
       LibCairo.destroy(@pointer.as(LibCairo::Context*))
     end
-  
+
+    # Increases the reference count on context by one.
+    # Returns : the referenced  context.
     def reference : Context
       Context.new LibCairo.reference(@pointer.as(LibCairo::Context*))
     end
 
+    # Returns the current reference count of context.
     def reference_count : UInt32
       LibCairo.get_reference_count(@pointer.as(LibCairo::Context*))
     end
 
+    # Return user data previously attached to context using the specified key.
+    # If no user data has been attached with the given key this function returns nil.
+    # *key* : the address of the LibCairo::UserDataKey the user data was attached to.
     def user_data(key : LibCairo::UserDataKey*) : Void*
       LibCairo.get_user_data(@pointer.as(LibCairo::Context*), key)
     end
 
+    # Attach user data to context.
+    # To remove user data from a surface, call this method with the key that was used to set it and nil for data.
+    # *key* : the address of a LibCairo::UserDataKey to attach the user data to.
+    # *user_data* :  the user data to attach to the context.
+    # *destroy* : a LibCairo::DestroyFunc which will be called when the context is destroyed or when new user data is attached using the same key.
+    # Returns : Cairo::Status::SUCCESS or Cairo::Status::NO_MEMORY if a slot could not be allocated for the user data.
     def set_user_data(key : LibCairo::UserDataKey*, user_data : Void*, destroy : LibCairo::DestroyFunc) : Status
       Status.new(LibCairo.set_user_data(@pointer.as(LibCairo::Context*), key, user_data, destroy).value)
     end
 
+    # Makes a copy of the current state of context and saves it on an internal stack of saved states for context.
+    # When `Context#restore()` is called, context will be restored to the saved state.
+    # Multiple calls to `Context#save()` and `Context#restore()` can be nested;
+    # each call to `Context#restore()` restores the state from the matching paired `Context#save()`.
+    # Returns this context.
     def save
       LibCairo.save(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Restores context to the state saved by a preceding call to `Context#save()` and removes that state from the stack of saved states. 
+    # Returns this context.
     def restore
       LibCairo.restore(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Temporarily redirects drawing to an intermediate surface known as a group.
+    # The redirection lasts until the group is completed by a call to `Context#pop_group()` or `Context#pop_group_to_source()`.
+    # These calls provide the result of any drawing to the group as a pattern, (either as an explicit object, or set as the source pattern). 
+    # This group functionality can be convenient for performing intermediate compositing.
+    # One common use of a group is to render objects as opaque within the group, (so that they occlude each other), and then blend the result with translucence onto the destination. 
+    # Groups can be nested arbitrarily deep by making balanced calls to `Context#push_group()`/`Context#pop_group()`. Each call pushes/pops the new target group onto/from a stack. 
+    # The `Context#push_group()` function calls `Context#save()` so that any changes to the graphics state will not be visible outside the group, (the pop_group methods call `Contexe#restore()`). 
+    # By default the intermediate group will have a content type of Cairo::Content::COLOR_ALPHA. Other content types can be chosen for the group by using `Context#push_group_with_content()` instead. 
+    # As an example, here is how one might fill and stroke a path with translucence, but without any portion of the fill being visible under the stroke: 
+    # ```
+    # context.push_group 
+    # context.source = fill_pattern
+    # context.fill_preserve
+    # context.source = stroke_pattern
+    # context.stroke
+    # context.pop_group_to_source
+    # context.paint_with_alpha  alpha
+    # ```
+    # Returns this context.
     def push_group
       LibCairo.push_group(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Temporarily redirects drawing to an intermediate surface known as a group.
+    # The redirection lasts until the group is completed by a call to `Context#pop_group()` or `Context#pop_group_to_source()`.
+    # These calls provide the result of any drawing to the group as a pattern, (either as an explicit object, or set as the source pattern). 
+    # The group will have a content type of content.
+    # The ability to control this content type is the only distinction between this method and `Context#push_group()` which you should see for a more detailed description of group rendering. 
+    # *content* : a `Cairo::Content` indicating the type of group that will be created.
+     # Returns this context.
     def push_group_with_content(content : Content)
       LibCairo.push_group_with_content(@pointer.as(LibCairo::Context*), content)
       self
     end
 
+    # Terminates the redirection begun by a call to `Context#push_group()` or `Context#push_group_with_content()`
+    # and returns a new pattern containing the results of all drawing operations performed to the group. 
+    # The `Context#pop_group()` method calls `Context#restore()`, (balancing a call to `Context#save()` by the push_group method),
+    # so that any changes to the graphics state will not be visible outside the group. 
+    # Returns : a newly created (surface) pattern containing the results of all drawing operations performed to the group. 
     def pop_group : Pattern
       Pattern.new(LibCairo.pop_group(@pointer.as(LibCairo::Context*)))
     end
 
+    # Terminates the redirection begun by a call to `Context#push_group()` or `Context#push_group_with_content()`
+    # and installs the resulting pattern as the source pattern in the given cairo context. 
+    # The behavior of this function is equivalent to the sequence of operations: 
+    # ```
+    # context.source = context.pop_group
+    # ```
+    # but is more convenient as their is no need for a variable to store the short-lived Pattern.
+    # The `Context#pop_group()` method calls `Context#restore()`, (balancing a call to `Context#save()` by the push_group method),
+    # so that any changes to the graphics state will not be visible outside the group.
+    # Returns : a newly created context containing the resulting pattern as the source pattern.
     def pop_group_to_source : Context
       Context.new(LibCairo.pop_group_to_source(@pointer.as(LibCairo::Context*)))
     end

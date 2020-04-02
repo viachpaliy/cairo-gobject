@@ -8,7 +8,9 @@ module Cairo
       @pointer = LibCairo.region_create
     end
 
-    # Create Rectangle
+    # Creates a new Rectangle containing *rectangle*.
+    # *rectangle* : a Cairo::`RectangleInt`.
+    # Returns : a newly allocated Cairo::Region.
     def initialize(rectangle : RectangleInt)
       @pointer = LibCairo.region_create_rectangle(rectangle.to_unsafe.as(LibCairo::RectangleInt*))
     end
@@ -17,21 +19,32 @@ module Cairo
       LibCairo.region_destroy(@pointer)
     end
 
+    # Allocates a new region object copying the area from this.
+    # Returns : a newly allocated Cairo::Region.
     def dup : Region
       Region.new(LibCairo.region_copy(@pointer))
     end
 
+    # Increases the reference count on region by one.
+    # Returns : the referenced Cairo::Region.
     def reference : Region
       Region.new(LibCairo.region_reference(@pointer))
     end
 
+    # Compares whether this region is equivalent to *other*.
+    # nil as an argument is equal to itself, but not to any non-nil region.
+    # *other* : a Cairo::Region
+    # Returns : true if both regions contained the same coverage, false if it is not or any region is in an error status.  
     def ==(other : Region) : Bool
       LibCairo.region_equal(@pointer, other.to_unsafe) == 1
     end
 
+    # Checks whether an error has previous occured for this region object.
+    # Returns : Cairo::Status::SUCCESS or Cairo::STATUS::NO_MEMORY  
     def status : Status
       Status.new(LibCairo.region_status(@pointer).value)
     end
+
 
     def extents : RectangleInt
       LibCairo.region_get_extents(@pointer, out extents)

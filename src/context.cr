@@ -118,56 +118,138 @@ module Cairo
       Context.new(LibCairo.pop_group_to_source(@pointer.as(LibCairo::Context*)))
     end
 
+    # Sets the compositing operator to be used for all drawing operations.
+    # *op* : a compositing operator, specified as a Cairo::`Operator`.
+    # Returns self.
     def operator=(op : Operator)
       LibCairo.set_operator(@pointer.as(LibCairo::Context*), op)
       self
     end
 
+    # Sets the source pattern within cr to source.
+    # This pattern will then be used for any subsequent drawing operation until a new source pattern is set. 
+    # Note: The pattern's transformation matrix will be locked to the user space in effect at the time of `Cairo#source=()`.
+    # This means that further modifications of the current transformation matrix will not affect the source pattern. See `Cairo::Pattern#matrix=()`. 
+    # The default source pattern is a solid pattern that is opaque black, (that is, it is equivalent to Context.set_source_rgb=(0.0, 0.0, 0.0)). 
+    # *source* : a `Cairo::Pattern` to be used as the source for subsequent drawing operations.
+    # Returns self.
     def source=(source : Pattern)
       LibCairo.set_source(@pointer.as(LibCairo::Context*), source.to_unsafe)
       self
     end
 
+    # Sets the source pattern to an opaque color.
+    # This opaque color will then be used for any subsequent drawing operation until a new source pattern is set. 
+    # The color components are floating point numbers in the range 0 to 1. If the values passed in are outside that range, they will be clamped. 
+    # The default source pattern is opaque black, (that is, it is equivalent to Context.set_source_rgb(0.0, 0.0, 0.0)). 
+    # *red* : red component of the color
+    # *green* : green component of the color
+    # *blue* : blue component of the color
+    # Returns self.
     def set_source_rgb(red : Float64, green : Float64, blue : Float64)
       LibCairo.set_source_rgb(@pointer.as(LibCairo::Context*), red, green, blue)
       self
     end
 
+    # Sets the source pattern to a translucent color.
+    # This color will then be used for any subsequent drawing operation until a new source pattern is set. 
+    # The color and alpha components are floating point numbers in the range 0 to 1. If the values passed in are outside that range, they will be clamped. 
+    # The default source pattern is opaque black, (that is, it is equivalent to Contextset_source_rgba(0.0, 0.0, 0.0, 1.0)). 
+    # *red* : red component of the color
+    # *green* : green component of the color
+    # *blue* : blue component of the color
+    # *alpha* : alpha component of the color
+    # Returns self.
     def set_source_rgba(red : Float64, green : Float64, blue : Float64, alpha : Float64)
       LibCairo.set_source_rgba(@pointer.as(LibCairo::Context*), red, green, blue, alpha)
       self
     end
 
+    # This is a convenience method for creating a pattern from surface and setting it as the source in context with `Context#set_source()`. 
+    # The x and y parameters give the user-space coordinate at which the surface origin should appear.
+    # (The surface origin is its upper-left corner before any transformation has been applied.)
+    # The x and y patterns are negated and then set as translation values in the pattern matrix. 
+    # Other than the initial translation pattern matrix, as described above, all other pattern attributes, (such as its extend mode),
+    # are set to the default values as in `Cairo::Pattern#create_for_surface()`.
+    # The resulting pattern can be queried with `Context#source()` so that these attributes can be modified if desired,
+    # (eg. to create a repeating pattern with `Cairo::Pattern#extend=()`). 
+    # *surface* :a surface to be used to set the source pattern
+    # *x* : user-space X coordinate for surface origin
+    # *y* : user-space Y coordinate for surface origin
+    # Returns self.
     def set_source_surface(surface : Surface, x : Float64, y : Float64)
       LibCairo.set_source_surface(surface.to_unsafe, x, y)
       self
     end
 
+    # Sets the tolerance used when converting paths into trapezoids.
+    # Curved segments of the path will be subdivided until the maximum deviation between the original path and the polygonal approximation is less than tolerance.
+    # The default value is 0.1. A larger value will give better performance, a smaller value, better appearance.
+    # (Reducing the value from the default value of 0.1 is unlikely to improve appearance significantly.)
+    # The accuracy of paths within Cairo is limited by the precision of its internal arithmetic, and the prescribed tolerance is restricted to the smallest representable internal value.
+    # *tolerance* : the tolerance, in device units (typically pixels)
+    # Returns self.
     def tolerance=(tolerance : Float64)
       LibCairo.set_tolerance(@pointer.as(LibCairo::Context*), tolerance)
       self
     end
 
+    # Sets the antialiasing mode of the rasterizer used for drawing shapes.
+    # This value is a hint, and a particular backend may or may not support a particular value.
+    # At the current time, no backend supports Cairo::Antialias::SUBPIXEL when drawing shapes. 
+    # Note that this option does not affect text rendering, instead see `Cairo::FontOptions#antialias=()`. 
+    # *antialias* : the new antialiasing mode.
+    # Returns self.
     def antialias=(antialias : Antialias)
       LibCairo.set_antialias(@pointer.as(LibCairo::Context*), antialias)
       self
     end
 
+    # Set the current fill rule within the cairo context.
+    # The fill rule is used to determine which regions are inside or outside a complex (potentially self-intersecting) path.
+    # The current fill rule affects both `Context#fill()` and `Context#clip()`.
+    # See `Cairo::FillRule` for details on the semantics of each available fill rule. 
+    # The default fill rule is Cairo::FillRule::WINDING. 
+    # *fill_rule* : a fill rule, specified as a `Cairo::FillRule`.
+    # Returns self.
     def fill_rule=(fill_rule : FillRule)
       LibCairo.set_fill_rule(@pointer.as(LibCairo::Context*), fill_rule)
       self
     end
 
+    # Sets the current line width within the cairo context.
+    # The line width value specifies the diameter of a pen that is circular in user space, (though device-space pen may be an ellipse in general due to scaling/shear/rotation of the CTM). 
+    # Note: When the description above refers to user space and CTM it refers to the user space and CTM in effect at the time of the stroking operation,
+    # not the user space and CTM in effect at the time of the call to `Context#line_width=()`.
+    # The simplest usage makes both of these spaces identical.
+    # That is, if there is no change to the CTM between a call to `Context#line_width=()` and the stroking operation,
+    # then one can just pass user-space values to `Context#line_width=()` and ignore this note. 
+    # As with the other stroke parameters, the current line width is examined by `Context#stroke()`, `Context#stroke_extents()`, but does not have any effect during path construction. 
+    # The default line width value is 2.0. 
+    # *width* : a line width.
+    # Returns self.
     def line_width=(width : Float64)
       LibCairo.set_line_width(@pointer.as(LibCairo::Context*), width)
       self
     end
 
+    # Sets the current line cap style within the cairo context.
+    # See `Cairo::LineCap` for details about how the available line cap styles are drawn. 
+    # As with the other stroke parameters, the current line cap style is examined by `Context#stroke()`, `Context#stroke_extents()` but does not have any effect during path construction. 
+    # The default line cap style is Cairo::LineCap::BUTT. 
+    # *line_cap* : a line cap style, specified as a `Cairo::LineCap`
+    # Returns self.
     def line_cap=(line_cap : LineCap)
       LibCairo.set_line_cap(@pointer.as(LibCairo::Context*), line_cap)
       self
     end
 
+    # Sets the current line join style within the cairo context.
+    # See `Cairo::LineJoin` for details about how the available line join styles are drawn. 
+    # As with the other stroke parameters, the current line join style is examined by `Context#stroke()`, `Context#stroke_extents()` but does not have any effect during path construction. 
+    # The default line join style is Cairo::LineJoin::MITER. 
+    # *line_join* : a line join style, specified as a `Cairo::LineJoin`
+    # Returns self.
     def line_join=(line_join : LineJoin)
       LibCairo.set_line_join(@pointer.as(LibCairo::Context*), line_join)
       self

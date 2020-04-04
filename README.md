@@ -10,8 +10,10 @@ so it is a fork "cairo-cr" shard (https://github.com/TamasSzekeres/cairo-cr)
 
 First install cairo:
 ```bash
-sudo apt-get install libgirepository1.0-dev libgtk-3-dev libcairo-gobject2 
+sudo apt-get install libgirepository1.0-dev libgtk-3-dev libcairo-gobject2 gir1.2-freedesktop
 ```
+Note: different vesrions of Ubuntu use different version of gir1.2-freedesktop package. If you use Ubuntu18.04 based distributives uncomment *Rectangle* structure in *src/lib_cairo.cr* file (lines 7...12).
+
 
 1. Add the dependency to your `shard.yml`:
 
@@ -46,7 +48,7 @@ TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/cairo-gobject/fork>)
+1. Fork it (<https://github.com/viachpaliy/cairo-gobject/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -155,7 +157,7 @@ We import the Cairo module:
 ```cr
 require "../src/cairo"
 ```
-In the class’s constructor we create an empty window:
+In the class\92s constructor we create an empty window:
 
 ```cr
 @window = Gtk::Window.new
@@ -169,7 +171,7 @@ We set a size of window :
 ```cr
 @window.resize 250,150
 ```
-Followed by connecting to the window’s delete event to ensure that   
+Followed by connecting to the window\92s delete event to ensure that   
 the application is terminated if we click on the x to close the window:
 
 ```cr

@@ -57,14 +57,25 @@ module Cairo
       Status.new(LibCairo.scaled_font_set_user_data(@pointer.as(LibCairo::ScaledFont*), key, user_data, destroy).value)
     end
 
-    def extents : LibCairo::FontExtents
+    # Returns a Cairo::`FontExtents` which to store the metrics for a Cairo::ScaledFont.
+    def extents : Cairo::FontExtents
       LibCairo.scaled_font_extents(@pointer.as(LibCairo::ScaledFont*), out font_extents)
-      font_extents.as(LibCairo::FontExtents)
+      FontExtents.new(font_extents.as(LibCairo::FontExtents*))
     end
 
-    def text_extents(text : String) : LibCairo::TextExtents
+    # Returns a Cairo::`TextExtents` which to store the extents for a string of text.
+    # The extents describe a user-space rectangle that encloses the "inked" portion of the text drawn at the origin (0,0)
+    # (as it would be drawn by `Context#show_text()` if the cairo graphics state were set
+    #  to the same `#font_face`, `#font_matrix`, `#ctm`, and `#font_options` as scaled_font).
+    # Additionally, the `TextExtents#x_advance` and `TextExtents#y_advance` values indicate the amount
+    # by which the current point would be advanced by `Context#show_text()`.
+    # Note that whitespace characters do not directly contribute to the size of the rectangle (extents.width and extents.height).
+    #  They do contribute indirectly by changing the position of non-whitespace characters.
+    #  In particular, trailing whitespace characters are likely to not affect the size of the rectangle, though they will affect the x_advance and y_advance values.
+    #  *text* : a string of text.  
+    def text_extents(text : String) : Cairo::TextExtents
       LibCairo.scaled_font_text_extents(@pointer.as(LibCairo::ScaledFont*), text.to_unsafe, out text_extents)
-      text_extents.as(LibCairo::TextExtents)
+      TextExtents.new(text_extents.as(LibCairo::TextExtents*))
     end
 
     # Returns the FontFace that this ScaledFont uses.

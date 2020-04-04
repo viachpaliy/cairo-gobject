@@ -2,7 +2,7 @@ module Cairo
 
   # A class for holding a rectangle. 
   # This is a wrapper for LibCairo::Rectangle structure.
-  class RectangleInt
+  class Rectangle
     include GObject::WrappedType
 
     # Returns a new Rectangle.

@@ -15,6 +15,7 @@ require "./status_exception.cr"
 require "./rectangle_int.cr"
 require "./rectangle.cr"
 require "./font_extents.cr"
+require "./text_extents.cr"
 
 # enum Content is defined "crystal-gobject" in compile time.
 # Content is used to describe the content that a surface will contain, whether color information, alpha information (translucence vs. opacity), or both.

@@ -315,8 +315,8 @@ module Cairo
       self
     end
 
-    def move_to(x : Float64, y : Float64)
-      LibCairo.move_to(@pointer.as(LibCairo::Context*), x, y)
+    def move_to(x : Int32 | Float64, y : Int32 | Float64)
+      LibCairo.move_to(@pointer.as(LibCairo::Context*), Float64.new(x), Float64.new(y))
       self
     end
    
@@ -325,55 +325,56 @@ module Cairo
       self
     end
 
-    def line(x1 : Float64, y1 : Float64, x2 : Float64, y2 : Float64)
-      LibCairo.move_to(@pointer.as(LibCairo::Context*), x1, y1)
-      LibCairo.line_to(@pointer.as(LibCairo::Context*), x2, y2)
+    def line(x1 : Int32 | Float64, y1 : Int32 | Float64, x2 : Int32 | Float64, y2 : Int32 | Float64)
+      LibCairo.move_to(@pointer.as(LibCairo::Context*), Float64.new(x1), Float64.new(y1))
+      LibCairo.line_to(@pointer.as(LibCairo::Context*), Float64.new(x2), Float64.new(y2))
       self
     end
 
-    def line_to(x : Float64, y : Float64)
-      LibCairo.line_to(@pointer.as(LibCairo::Context*), x, y)
+    def line_to(x : Int32 | Float64, y : Int32 | Float64)
+      LibCairo.line_to(@pointer.as(LibCairo::Context*), Float64.new(x), Float64.new(y))
       self
     end
 
-    def curve_to(x1 : Float64, y1 : Float64,
-                 x2 : Float64, y2 : Float64,
-                 x3 : Float64, y3 : Float64)
-      LibCairo.curve_to(@pointer.as(LibCairo::Context*), x1, y1, x2, y2, x3, y3)
+    def curve_to(x1 : Int32 | Float64, y1 : Int32 | Float64,
+                 x2 : Int32 | Float64, y2 : Int32 | Float64,
+                 x3 : Int32 | Float64, y3 : Int32 | Float64)
+      LibCairo.curve_to(@pointer.as(LibCairo::Context*), Float64.new(x1), Float64.new(y1), Float64.new(x2), Float64.new(y2), Float64.new(x3), Float64.new(y3))
       self
     end
 
     def arc(xc : Int32 | Float64, yc : Int32 | Float64, radius : Int32 | Float64,
             angle1 : Float64, angle2 : Float64)
-      LibCairo.arc(@pointer.as(LibCairo::Context*), xc, yc, radius, angle1, angle2)
+      LibCairo.arc(@pointer.as(LibCairo::Context*), Float64.new(xc), Float64.new(yc), Float64.new(radius), angle1, angle2)
       self
     end
 
-    def arc_negative(xc : Float64, yc : Float64,
-                     radius : Float64, angle1 : Float64, angle2 : Float64)
-      LibCairo.arc_negative(@pointer.as(LibCairo::Context*), xc, yc, radius, angle1, angle2)
+    def arc_negative(xc : Int32 | Float64, yc : Int32 | Float64,
+                     radius : Int32 | Float64, angle1 : Float64, angle2 : Float64)
+      LibCairo.arc_negative(@pointer.as(LibCairo::Context*),  Float64.new(xc), Float64.new(yc), Float64.new(radius), angle1, angle2)
       self
     end
 
-    def rel_move_to(dx : Float64, dy : Float64)
-      LibCairo.rel_move_to(@pointer.as(LibCairo::Context*), dx, dy)
+    def rel_move_to(dx : Int32 | Float64, dy : Int32 | Float64)
+      LibCairo.rel_move_to(@pointer.as(LibCairo::Context*), Float64.new(dx), Float64.new(dy))
       self
     end
 
-    def rel_line_to(dx : Float64, dy : Float64)
-      LibCairo.rel_line_to(@pointer.as(LibCairo::Context*), dx, dy)
+    def rel_line_to(dx : Int32 | Float64, dy : Int32 | Float64)
+      LibCairo.rel_line_to(@pointer.as(LibCairo::Context*), Float64.new(dx), Float64.new(dy))
       self
     end
 
-    def rel_curve_to(dx1 : Float64, dy1 : Float64,
-                     dx2 : Float64, dy2 : Float64,
-                     dx3 : Float64, dy3 : Float64)
-      LibCairo.rel_curve_to(@pointer.as(LibCairo::Context*), dx1, dy1, dx2, dy2, dx3, dy3)
+    def rel_curve_to(dx1 : Int32 | Float64, dy1 : Int32 | Float64,
+                     dx2 : Int32 | Float64, dy2 : Int32 | Float64,
+                     dx3 : Int32 | Float64, dy3 : Int32 | Float64)
+      LibCairo.rel_curve_to(@pointer.as(LibCairo::Context*), Float64.new(dx1), Float64.new(dy1), Float64.new(dx2),
+                                                             Float64.new(dy2), Float64.new(dx3), Float64.new(dy3))
       self
     end
 
-    def rectangle(x : Float64, y : Float64, width : Float64, height : Float64)
-      LibCairo.rectangle(@pointer.as(LibCairo::Context*), x, y, width, height)
+    def rectangle(x : Int32 | Float64, y : Int32 | Float64, width : Int32 | Float64, height : Int32 | Float64)
+      LibCairo.rectangle(@pointer.as(LibCairo::Context*), Float64.new(x), Float64.new(y), Float64.new(width), Float64.new(height))
       self
     end
 

@@ -31,6 +31,9 @@ class CairoApp
     btn6 = Gtk::Button.new_with_label "transparent"
     btn6.on_clicked { transparent }
     bbox.pack_start(btn6, expand = true, fill = true, padding = 2)
+    btn7 = Gtk::Button.new_with_label "clip"
+    btn7.on_clicked { clip }
+    bbox.pack_start(btn7, expand = true, fill = true, padding = 2)
     scrolledwindow = Gtk::ScrolledWindow.new nil, nil
     scrolledwindow.hexpand = true
     scrolledwindow.vexpand = true 
@@ -163,6 +166,23 @@ class CairoApp
       context.fill
       i = i + 1
     end
+  end
+
+  def clip
+    draw_white_rect
+    context = Gdk.cairo_create(@darea.window.not_nil!)
+    context.arc(@darea.allocated_width/2,@darea.allocated_height/2, @darea.allocated_height/2.5 , 0, 6.283)
+    context.clip
+    context.new_path
+    context.rectangle(0, 0, @darea.allocated_width, @darea.allocated_height)
+    context.fill
+    context.set_source_rgb(0, 1, 0)
+    context.move_to(0, 0)
+    context.line_to(@darea.allocated_width, @darea.allocated_height)
+    context.move_to(@darea.allocated_width, 0)
+    context.line_to(0, @darea.allocated_height)
+    context.line_width = 10
+    context.stroke
   end
 
 end

@@ -34,6 +34,9 @@ class CairoApp
     btn7 = Gtk::Button.new_with_label "clip"
     btn7.on_clicked { clip }
     bbox.pack_start(btn7, expand = true, fill = true, padding = 2)
+    btn8 = Gtk::Button.new_with_label "clip image"
+    btn8.on_clicked { clip_image }
+    bbox.pack_start(btn8, expand = true, fill = true, padding = 2)
     scrolledwindow = Gtk::ScrolledWindow.new nil, nil
     scrolledwindow.hexpand = true
     scrolledwindow.vexpand = true 
@@ -183,6 +186,20 @@ class CairoApp
     context.line_to(0, @darea.allocated_height)
     context.line_width = 10
     context.stroke
+  end
+
+  def clip_image
+    draw_white_rect
+    context = Gdk.cairo_create(@darea.window.not_nil!)
+    context.arc(@darea.allocated_width / 2, @darea.allocated_height / 2, @darea.allocated_height / 2.5 , 0, 6.283)
+    context.clip
+    context.new_path
+    image = Cairo::Surface.create_from_png("samples/image.png")
+    w = image.width
+    h = image.height
+    context.scale(Float64.new(@darea.allocated_width / w),Float64.new(@darea.allocated_height / h))
+    context.set_source_surface(image, 0, 0)
+    context.paint
   end
 
 end

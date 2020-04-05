@@ -4,24 +4,24 @@ module Cairo
   class Device
 
     def finalize
-      LibCairo.device_destroy(@pointer)
+      LibCairo.device_destroy(@pointer.as(LibCairo::Device*))
     end
 
     # Increases the reference count on device by one.
     # Returns : the referenced Cairo::Device.
     def reference : Device
-      Device.new(LibCairo.device_reference(@pointer))
+      Device.new(LibCairo.device_reference(@pointer.as(LibCairo::Device*)))
     end
 
     # Returns the type of the device. 
     def type : DeviceType
-      DeviceType.new(LibCairo.device_get_type(@pointer).value)
+      DeviceType.new(LibCairo.device_get_type(@pointer.as(LibCairo::Device*)))
     end
 
     # Checks whether an error has previously occurred for this device.
     # Returns : Cairo::Status::SUCCESS on success or an error code if the device is in an error state.  
     def status : Status
-      Status.new(LibCairo.device_status(@pointer).value)
+      Status.new(LibCairo.device_status(@pointer.as(LibCairo::Device*)))
     end
 
     # Acquires the device for the current thread. This function will block until no other thread has acquired the device. 
@@ -34,13 +34,13 @@ module Cairo
     # After a successful call to `Device#acquire()`, a matching call to `Device#release()` is required. 
     # Returns : Cairo::Status::SUCCESS on success or an error code if the device is in an error state and could not be acquired.
     def acquire : Status
-      Status.new(LibCairo.device_acquire(@pointer).value)
+      Status.new(LibCairo.device_acquire(@pointer.as(LibCairo::Device*)))
     end
 
     # Releases a device previously acquired using `Device#acquire()`.
     # Returns this device.
     def release
-      LibCairo.device_release(@pointer)
+      LibCairo.device_release(@pointer.as(LibCairo::Device*))
       self
     end
 
@@ -50,7 +50,7 @@ module Cairo
     # This method may acquire devices.
     # Returns this device.
     def flush
-      LibCairo.device_flush(@pointer)
+      LibCairo.device_flush(@pointer.as(LibCairo::Device*))
       self
     end
 
@@ -60,20 +60,20 @@ module Cairo
     # This method may acquire devices.
     # Returns this device.
     def finish
-      LibCairo.device_finish(@pointer)
+      LibCairo.device_finish(@pointer.as(LibCairo::Device*))
       self
     end
 
     # Returns the current reference count of device. If the object is a nil object, 0 will be returned.  
     def reference_count : UInt32
-      LibCairo.device_get_reference_count(@pointer)
+      LibCairo.device_get_reference_count(@pointer.as(LibCairo::Device*))
     end
 
     # Returns user data previously attached to device using the specified key.
     # If no user data has been attached with the given key this function returns NULL.
     # *key* : the address of the LibCairo::UserDataKey the user data was attached to .
     def user_data(key : LibCairo::UserDataKey) : Void*
-      LibCairo.device_get_user_data(@pointer, key)
+      LibCairo.device_get_user_data(@pointer.as(LibCairo::Device*), key)
     end
 
     # Attach user data to device. To remove user data from a surface, call this function with the key that was used to set it and NULL for data.
@@ -82,7 +82,7 @@ module Cairo
     # *destroy* : a LibCairo::DestroyFunc which will be called when the device is destroyed or when new user data is attached using the same key.
     # Returns : Cairo::Status::SUCCESS or Cairo::Status::NO_MEMORY if a slot could not be allocated for the user data.
     def set_user_data(key : LibCairo::UserDataKey, user_data : Void*, destroy : LibCairo::DestroyFunc) : Status
-      Status.new(LibCairo.device_set_user_data(@pointer, key, user_data, destroy).value)
+      Status.new(LibCairo.device_set_user_data(@pointer.as(LibCairo::Device*), key, user_data, destroy).value)
     end
 
   end

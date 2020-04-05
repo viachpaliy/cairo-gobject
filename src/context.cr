@@ -178,7 +178,7 @@ module Cairo
     # *y* : user-space Y coordinate for surface origin
     # Returns self.
     def set_source_surface(surface : Surface, x : Float64, y : Float64)
-      LibCairo.set_source_surface(surface.to_unsafe, x, y)
+      LibCairo.set_source_surface(@pointer.as(LibCairo::Context*), surface.to_unsafe, x, y)
       self
     end
 
@@ -619,7 +619,7 @@ module Cairo
     end
 
     def status : Status
-      Status.new(LibCairo.status(@pointer.as(LibCairo::Context*)).value)
+      Status.new(LibCairo.status(@pointer.as(LibCairo::Context*)))
     end
 
 

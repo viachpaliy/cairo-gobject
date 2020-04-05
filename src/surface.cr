@@ -6,6 +6,13 @@ module Cairo
     def finalize
       LibCairo.surface_destroy(@pointer.as(LibCairo::Surface*))
     end
+    
+    # Reads PNG file and cretes new surface for image.
+    # *filename* - the PNG file name.
+    # Returns a new Cairo::Surface.
+    def self.create_from_png(filename : String)
+      Surface.new(LibCairo.surface_create_from_png(filename.to_unsafe))
+    end
 
     # Creates a new surface that is as compatible as possible with an existing surface.
     # For example the new surface will have the same fallback resolution and font options as **self**.
@@ -17,23 +24,23 @@ module Cairo
     #  *height* : height of the new surface (in device-space units).
     # Returns a new surface.
     def create_similar(content : Content, width : Int32, height : Int32) : Surface
-      Surface.new(LibCairo.surface_create_similar(@pointer, content, width, height))
+      Surface.new(LibCairo.surface_create_similar(@pointer.as(LibCairo::Surface*), content, width, height))
     end
 
     def create_similar_image(format : Format, width : Int32, height : Int32) : Surface
-      Surface.new(LibCairo.surface_create_similar_image(@pointer, format, width, height))
+      Surface.new(LibCairo.surface_create_similar_image(@pointer.as(LibCairo::Surface*), format, width, height))
     end
 
     def map_to_image(extents : RectangleInt?) : Surface
       if extents.is_a(RectangleInt)
-        Surface.new(LibCairo.surface_map_to_image(@pointer, extents.as(RectangleInt).to_unsafe))
+        Surface.new(LibCairo.surface_map_to_image(@pointer.as(LibCairo::Surface*), extents.as(RectangleInt).to_unsafe))
       else
-        Surface.new(LibCairo.surface_map_to_image(@pointer, nil))
+        Surface.new(LibCairo.surface_map_to_image(@pointer.as(LibCairo::Surface*), nil))
       end
     end
 
     def unmap_image(image : Surface)
-      LibCairo.surface_unmap_image(@pointer, image.to_unsafe)
+      LibCairo.surface_unmap_image(@pointer.as(LibCairo::Surface*), image.to_unsafe)
       self
     end
 
@@ -50,7 +57,7 @@ module Cairo
     #   *height* : height of the sub-surface (in device-space units)
     # Returns a new surface.
     def create_for_rectangle(x : Float64, y : Float64, width : Float64, height : Float64) : Surface
-      Surface.new(LibCairo.surface_create_for_rectangle(@pointer, x, y, width, height))
+      Surface.new(LibCairo.surface_create_for_rectangle(@pointer.as(LibCairo::Surface*), x, y, width, height))
     end
 
     # Writes the contents of surface to a new file *filename* as a PNG image.
@@ -58,7 +65,7 @@ module Cairo
     # Otherwise, Cairo::`Status`::NO_MEMORY if memory could not be allocated for the operation
     # or Cairo::`Status`::SURFACE_TYPE_MISMATCH if the surface does not have pixel contents,
     # or Cairo::`Status`::WRITE_ERROR if an I/O error occurs while attempting to write the file. 
-    def write_to_png( filename ) : Status
+    def write_to_png( filename : String ) : Status
       __return_value = LibCairo.surface_write_to_png(@pointer.as(LibCairo::Surface*) , filename.to_unsafe)
       __return_value
     end
@@ -66,7 +73,7 @@ module Cairo
     # Increases the reference count on surface by one.
     # Returns : the referenced Cairo::Surface.
     def reference : Surface
-      Surface.new(LibCairo.surface_reference(@pointer))
+      Surface.new(LibCairo.surface_reference(@pointer.as(LibCairo::Surface*)))
     end
 
     # This method finishes the surface and drops all references to external resources.
@@ -76,34 +83,34 @@ module Cairo
     # Further drawing to the surface will not affect the surface but will instead trigger a Cairo::Status::SURFACE_FINISHED error.
     # Returns this surface.
     def finish
-      LibCairo.surface_finish(@pointer)
+      LibCairo.surface_finish(@pointer.as(LibCairo::Surface*))
       self
     end
 
     # Returns the device for a surface.
     def device : Device
-      Device.new(LibCairo.surface_get_device(@pointer))
+      Device.new(LibCairo.surface_get_device(@pointer.as(LibCairo::Surface*)))
     end
 
     # Returns the current reference count of surface. 
     def reference_count : UInt32
-      LibCairo.surface_get_reference_count(@pointer)
+      LibCairo.surface_get_reference_count(@pointer.as(LibCairo::Surface*))
     end
 
     # Checks whether an error has previously occurred for this surface.
     # Returns a new Cairo::Status.
     def status : Status
-      Status.new(LibCairo.surface_status(@pointer).value)
+      Status.new(LibCairo.surface_status(@pointer.as(LibCairo::Surface*)))
     end
 
     # Returns the type of the backend used to create a surface.
     def get_type : SurfaceType
-      SurfaceType.new(LibCairo.surface_get_type(@pointer).value)
+      SurfaceType.new(LibCairo.surface_get_type(@pointer.as(LibCairo::Surface*)).value)
     end
 
     # Returns the `Content` type of surface which indicates whether the surface contains color and/or alpha information.
     def content : Content
-      Content.new(LibCairo.surface_get_content(@pointer).value)
+      Content.new(LibCairo.surface_get_content(@pointer.as(LibCairo::Surface*)).value)
     end
 
     # Writes the image surface to the write function.
@@ -113,14 +120,14 @@ module Cairo
     # Returns : Cairo::Status::SUCCESS if the PNG file was written successfully. Otherwise, Cairo::Status::NO_MEMORY is returned if memory could not be allocated for the operation,
     # Cairo::Status::SURFACE_TYPE_MISMATCH if the surface does not have pixel contents. 
     def write_to_png_stream(write_func : LibCairo::WriteFunc, closure : Void*) : Status
-      Status.new(LibCairo.surface_write_to_png_stream(@pointer, write_func, closure).value)
+      Status.new(LibCairo.surface_write_to_png_stream(@pointer.as(LibCairo::Surface*), write_func, closure).value)
     end
 
     # Returns user data previously attached to surface using the specified key.
     # If no user data has been attached with the given key this function returns nil.
     # *key* : the address of the LibCairo::UserDataKey the user data was attached to. 
     def user_data(key : LibCairo::UserDataKey*) : Void*
-      LibCairo.surface_get_user_data(@pointer, key)
+      LibCairo.surface_get_user_data(@pointer.as(LibCairo::Surface*), key)
     end
 
     # Attaches user data to surface. To remove user data from a surface, call this function with the key that was used to set it and nil for data.
@@ -129,14 +136,14 @@ module Cairo
     # *destroy* : a LibCairo::DestroyFunc which will be called when the surface is destroyed or when new user data is attached using the same key.
     # Returns : Cairo::Status::SUCCESS or Cairo::Status::NO_MEMORY if a slot could not be allocated for the user data.  
     def set_user_data(key : LibCairo::UserDataKey*, user_data : Void*, destroy : LibCairo::DestroyFunc) : Status
-      Status.new(LibCairo.surface_set_user_data(@pointer, key, user_data, destroy).value)
+      Status.new(LibCairo.surface_set_user_data(@pointer.as(LibCairo::Surface*), key, user_data, destroy).value)
     end
 
     # Returns mime data previously attached to surface using the specified mime type.
     # If no data has been attached with the given mime type, data is set nil.
     # *mime_type* :  the MIME type of the image data 
     def mime_data(mime_type : String) : Bytes
-      LibCairo.surface_get_mime_data(@pointer, mime_type.to_unsafe, out data, out length)
+      LibCairo.surface_get_mime_data(@pointer.as(LibCairo::Surface*), mime_type.to_unsafe, out data, out length)
       Bytes.new(data, length)
     end
 
@@ -152,17 +159,17 @@ module Cairo
     # *closure* : the data to be passed to the destroy notifier .
     # Returns : Cairo::Status::SUCCESS or Cairo::Status::NO_MEMORY if a slot could not be allocated for the user data.  
     def set_mime_data(mime_type : String, data : Bytes, destroy : LibCairo::DestroyFunc, closure : Void*) : Status
-      Status.new(LibCairo.surface_set_mime_data(@pointer, mime_type.to_unsafe,
-        data.to_unsafe, data.size, destroy, closure).value)
+      Status.new(LibCairo.surface_set_mime_data(@pointer.as(LibCairo::Surface*), mime_type.to_unsafe,
+                 data.to_unsafe, data.size, destroy, closure).value)
     end
     
     def supports_mime_type?(mime_type : String) : Bool
-      LibCairo.surface_supports_mime_type(@pointer, mime_type.to_unsafe) == 1
+      LibCairo.surface_supports_mime_type(@pointer.as(LibCairo::Surface*), mime_type.to_unsafe) == 1
     end
     
     def font_options : FontOptions
       font_options = FontOptions.new
-      LibCairo.surface_get_font_options(@pointer, font_options.to_unsafe)
+      LibCairo.surface_get_font_options(@pointer.as(LibCairo::Surface*), font_options.to_unsafe)
       font_options
     end
 
@@ -171,7 +178,7 @@ module Cairo
     # If the surface doesn't support direct access, then this function does nothing.
     # Returns this surface.
     def flush
-      LibCairo.surface_flush(@pointer)
+      LibCairo.surface_flush(@pointer.as(LibCairo::Surface*))
       self
     end
 
@@ -179,7 +186,7 @@ module Cairo
     # Note that you must call `#flush()` before doing such drawing.
     # Returns this surface.
     def mark_dirty
-      LibCairo.surface_mark_dirty(@pointer)
+      LibCairo.surface_mark_dirty(@pointer.as(LibCairo::Surface*))
       self
     end
 
@@ -191,17 +198,17 @@ module Cairo
     # *height* : height of dirty rectangle.
     # Returns this surface.
     def mark_dirty_rectangle(x : Int32, y : Int32, width : Int32, height : Int32)
-      LibCairo.surface_mark_dirty_rectangle(@pointer, x, y, width, height)
+      LibCairo.surface_mark_dirty_rectangle(@pointer.as(LibCairo::Surface*), x, y, width, height)
       self
     end
 
     def set_device_scale(x_scale : Float64, y_scale : Float64)
-      LibCairo.surface_set_device_scale(@pointer, x_scale, y_scale)
+      LibCairo.surface_set_device_scale(@pointer.as(LibCairo::Surface*), x_scale, y_scale)
       self
     end
 
     def device_scale(x_scale : Float64*, y_scale : Float64*) : Void
-      LibCairo.surface_get_device_scale(@pointer, x_scale, y_scale)
+      LibCairo.surface_get_device_scale(@pointer.as(LibCairo::Surface*), x_scale, y_scale)
     end
 
     # Sets an offset that is added to the device coordinates determined by the CTM when drawing to surface.
@@ -213,7 +220,7 @@ module Cairo
     # *y_offset* : the offset in the Y direction, in device units.
     # Returns this surface.
     def set_device_offset(x_offset : Float64, y_offset : Float64)
-      LibCairo.surface_set_device_offset(@pointer, x_offset, y_offset)
+      LibCairo.surface_set_device_offset(@pointer.as(LibCairo::Surface*), x_offset, y_offset)
       self
     end
 
@@ -221,7 +228,7 @@ module Cairo
     # *x_offset* :  the offset in the X direction, in device units.
     # *y_offset* : the offset in the Y direction, in device units.
     def device_offset(x_offset : Float64*, y_offset : Float64*) : Void
-      LibCairo.surface_get_device_offset(@pointer, x_offset, y_offset)
+      LibCairo.surface_get_device_offset(@pointer.as(LibCairo::Surface*), x_offset, y_offset)
     end
 
     # Sets the horizontal and vertical resolution for image fallbacks. 
@@ -239,7 +246,7 @@ module Cairo
     # *y_pixels_per_inch* : vertical setting for pixels per inch.
     # Returns this surface.
     def set_fallback_resolution(x_pixels_per_inch : Float64, y_pixels_per_inch : Float64)
-      LibCairo.surface_set_fallback_resolution(@pointer, x_pixels_per_inch, y_pixels_per_inch)
+      LibCairo.surface_set_fallback_resolution(@pointer.as(LibCairo::Surface*), x_pixels_per_inch, y_pixels_per_inch)
       self
     end
 
@@ -247,7 +254,7 @@ module Cairo
     # *x_pixels_per_inch* : horizontal setting for pixels per inch.
     # *y_pixels_per_inch* : vertical setting for pixels per inch. 
     def fallback_resolution(x_pixels_per_inch : Float64*, y_pixels_per_inch : Float64*) : Point
-      LibCairo.surface_get_fallback_resolution(@pointer, x_pixels_per_inch, y_pixels_per_inch)
+      LibCairo.surface_get_fallback_resolution(@pointer.as(LibCairo::Surface*), x_pixels_per_inch, y_pixels_per_inch)
     end
 
     # Emits the current page for backends that support multiple pages, but doesn't clear it,
@@ -256,7 +263,7 @@ module Cairo
     # There is a convenience method for this that takes a `Context`, namely `Context#copy_page()`.
     # Returns this surface.
     def copy_page
-      LibCairo.surface_copy_page(@pointer)
+      LibCairo.surface_copy_page(@pointer.as(LibCairo::Surface*))
       self
     end
 
@@ -264,7 +271,7 @@ module Cairo
     # There is a convenience function for this that takes a `Context`, namely `Context#show_page()`. 
     # Returns this surface.
     def show_page
-      LibCairo.surface_show_page(@pointer)
+      LibCairo.surface_show_page(@pointer.as(LibCairo::Surface*))
       self
     end
 
@@ -274,27 +281,30 @@ module Cairo
     # It just will act like a `Context#show_glyphs()` operation. Users can use this function to avoid computing UTF-8 text and cluster mapping if the target surface does not use it. 
     # Returns : true if surface supports `Context#_show_text_glyphs()`, false otherwise.  
     def has_show_text_glyphs? : Bool
-      LibCairo.surface_has_show_text_glyphs(@pointer) == 1
+      LibCairo.surface_has_show_text_glyphs(@pointer.as(LibCairo::Surface*)) == 1
     end
 
     def data : String
-      String.new(LibCairo.image_surface_get_data(@pointer))
+      String.new(LibCairo.image_surface_get_data(@pointer.as(LibCairo::Surface*)))
     end
 
     def format : Format
-      Format.new(LibCairo.image_surface_get_format(@pointer).value)
+      Format.new(LibCairo.image_surface_get_format(@pointer.as(LibCairo::Surface*)).value)
     end
 
+    # Returns the width of the surface in pixels.
     def width : Int32
-      LibCairo.image_surface_get_width(@pointer)
+      LibCairo.image_surface_get_width(@pointer.as(LibCairo::Surface*))
     end
 
+    # Returns the height of the surface in pixels.
     def height : Int32
-      LibCairo.image_surface_get_height(@pointer)
+      LibCairo.image_surface_get_height(@pointer.as(LibCairo::Surface*))
     end
 
+    # Returns the stride of the image surface in bytes.
     def stride : Int32
-      LibCairo.image_surface_get_stride(@pointer)
+      LibCairo.image_surface_get_stride(@pointer.as(LibCairo::Surface*))
     end
 
   end

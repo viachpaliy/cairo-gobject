@@ -1378,6 +1378,8 @@ lib LibCairo
       surface : LibCairo::Surface*
     ) : LibCairo::Content
 
+    fun surface_create_from_png = cairo_image_surface_create_from_png(filename : UInt8*) : LibCairo::Surface*
+
     fun surface_write_to_png = cairo_surface_write_to_png(
       surface : LibCairo::Surface*,
       filename : UInt8*
@@ -1491,6 +1493,16 @@ lib LibCairo
       surface : LibCairo::Surface*
     ) : Int32
 
+    fun image_surface_get_width = cairo_image_surface_get_width(
+      surface : LibCairo::Surface*
+    ) : Int32
 
+    fun image_surface_get_height = cairo_image_surface_get_height(
+      surface : LibCairo::Surface*
+    ) : Int32
+
+    fun image_surface_get_stride = cairo_image_surface_get_stride(
+      surface : LibCairo::Surface*
+    ) : Int32
 
 end

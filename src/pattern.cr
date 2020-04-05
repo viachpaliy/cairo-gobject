@@ -80,7 +80,7 @@ module Cairo
     # Checks whether an error has previously occurred for this pattern.
     # Returns : Cairo::`Status`::SUCCESS, Cairo::`Status`::NO_MEMORY, or Cairo::`Status`::PATTERN_TYPE_MISMATCH.  
     def status : Status
-      Status.new(LibCairo.pattern_status(@pointer.as(LibCairo::Pattern*)).value)
+      Status.new(LibCairo.pattern_status(@pointer.as(LibCairo::Pattern*)))
     end
 
     # Return user data previously attached to pattern using the specified key.

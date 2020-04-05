@@ -32,12 +32,12 @@ module Cairo
     # Checks whether an error has previously occurred for this font face.
     # Returns : Cairo::Status::SUCCESS or another error such as Cairo::Status::NO_MEMORY.  
     def status : Status
-      Status.new(LibCairo.font_face_status(@pointer.as(LibCairo::FontFace*)).value)
+      Status.new(LibCairo.font_face_status(@pointer.as(LibCairo::FontFace*)))
     end
 
     # Returns the type of the backend used to create a FontFace.
     def type : FontType
-      FontType.new(LibCairo.font_face_get_type(@pointer.as(LibCairo::FontFace*)).value)
+      FontType.new(LibCairo.font_face_get_type(@pointer.as(LibCairo::FontFace*)))
     end
 
     # Return user data previously attached to FontFace using the specified key.
@@ -72,11 +72,11 @@ module Cairo
     end
 
     def slant : FontSlant
-      FontSlant.new(LibCairo.toy_font_face_get_slant(@pointer.as(LibCairo::FontFace*)).value)
+      FontSlant.new(LibCairo.toy_font_face_get_slant(@pointer.as(LibCairo::FontFace*)))
     end
 
     def weight : FontWeight
-      FontWeight.new(LibCairo.toy_font_face_get_weight(@pointer.as(LibCairo::FontFace*)).value)
+      FontWeight.new(LibCairo.toy_font_face_get_weight(@pointer.as(LibCairo::FontFace*)))
     end
 
     def init_func : LibCairo::UserScaledFontInitFunc

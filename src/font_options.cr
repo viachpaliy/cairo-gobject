@@ -51,7 +51,7 @@ module Cairo
 
     # Returns the antialiasing mode for the font options object. 
     def antialias : Antialias
-      Antialias.new(LibCairo.font_options_get_antialias(@pointer.as(LibCairo::FontOptions*)).value)
+      Antialias.new(LibCairo.font_options_get_antialias(@pointer.as(LibCairo::FontOptions*)))
     end
 
     # Sets the antialiasing mode for the font options object. This specifies the type of antialiasing to do when rendering text.
@@ -63,7 +63,7 @@ module Cairo
 
     # Returns the subpixel order for the font options object.
     def subpixel_order : SubpixelOrder
-      SubpixelOrder.new(LibCairo.font_options_get_subpixel_order(@pointer.as(LibCairo::FontOptions*)).value)
+      SubpixelOrder.new(LibCairo.font_options_get_subpixel_order(@pointer.as(LibCairo::FontOptions*)))
     end
 
     # Sets the subpixel order for the font options object.
@@ -77,7 +77,7 @@ module Cairo
 
     # Returns the hint style for font outlines for the font options object. 
     def hint_style : HintStyle
-      HintStyle.new(LibCairo.font_options_get_hint_style(@pointer.as(LibCairo::FontOptions*)).value)
+      HintStyle.new(LibCairo.font_options_get_hint_style(@pointer.as(LibCairo::FontOptions*)))
     end
 
     # Sets the hint style for font outlines for the font options object.
@@ -90,7 +90,7 @@ module Cairo
 
     # Returns the metrics hinting mode for the font options object.
     def hint_metrics : HintMetrics
-      HintMetrics.new(LibCairo.font_options_get_hint_metrics(@pointer.as(LibCairo::FontOptions*)).value)
+      HintMetrics.new(LibCairo.font_options_get_hint_metrics(@pointer.as(LibCairo::FontOptions*)))
     end
 
     # Sets the metrics hinting mode for the font options object.

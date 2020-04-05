@@ -66,8 +66,7 @@ module Cairo
     # or Cairo::`Status`::SURFACE_TYPE_MISMATCH if the surface does not have pixel contents,
     # or Cairo::`Status`::WRITE_ERROR if an I/O error occurs while attempting to write the file. 
     def write_to_png( filename : String ) : Status
-      __return_value = LibCairo.surface_write_to_png(@pointer.as(LibCairo::Surface*) , filename.to_unsafe)
-      __return_value
+      Status.new( LibCairo.surface_write_to_png(@pointer.as(LibCairo::Surface*) , filename.to_unsafe))
     end
 
     # Increases the reference count on surface by one.
@@ -110,7 +109,7 @@ module Cairo
 
     # Returns the `Content` type of surface which indicates whether the surface contains color and/or alpha information.
     def content : Content
-      Content.new(LibCairo.surface_get_content(@pointer.as(LibCairo::Surface*)).value)
+      Content.new(LibCairo.surface_get_content(@pointer.as(LibCairo::Surface*)))
     end
 
     # Writes the image surface to the write function.
@@ -120,7 +119,7 @@ module Cairo
     # Returns : Cairo::Status::SUCCESS if the PNG file was written successfully. Otherwise, Cairo::Status::NO_MEMORY is returned if memory could not be allocated for the operation,
     # Cairo::Status::SURFACE_TYPE_MISMATCH if the surface does not have pixel contents. 
     def write_to_png_stream(write_func : LibCairo::WriteFunc, closure : Void*) : Status
-      Status.new(LibCairo.surface_write_to_png_stream(@pointer.as(LibCairo::Surface*), write_func, closure).value)
+      Status.new(LibCairo.surface_write_to_png_stream(@pointer.as(LibCairo::Surface*), write_func, closure))
     end
 
     # Returns user data previously attached to surface using the specified key.
@@ -136,7 +135,7 @@ module Cairo
     # *destroy* : a LibCairo::DestroyFunc which will be called when the surface is destroyed or when new user data is attached using the same key.
     # Returns : Cairo::Status::SUCCESS or Cairo::Status::NO_MEMORY if a slot could not be allocated for the user data.  
     def set_user_data(key : LibCairo::UserDataKey*, user_data : Void*, destroy : LibCairo::DestroyFunc) : Status
-      Status.new(LibCairo.surface_set_user_data(@pointer.as(LibCairo::Surface*), key, user_data, destroy).value)
+      Status.new(LibCairo.surface_set_user_data(@pointer.as(LibCairo::Surface*), key, user_data, destroy))
     end
 
     # Returns mime data previously attached to surface using the specified mime type.
@@ -160,7 +159,7 @@ module Cairo
     # Returns : Cairo::Status::SUCCESS or Cairo::Status::NO_MEMORY if a slot could not be allocated for the user data.  
     def set_mime_data(mime_type : String, data : Bytes, destroy : LibCairo::DestroyFunc, closure : Void*) : Status
       Status.new(LibCairo.surface_set_mime_data(@pointer.as(LibCairo::Surface*), mime_type.to_unsafe,
-                 data.to_unsafe, data.size, destroy, closure).value)
+                 data.to_unsafe, data.size, destroy, closure))
     end
     
     def supports_mime_type?(mime_type : String) : Bool
@@ -289,7 +288,7 @@ module Cairo
     end
 
     def format : Format
-      Format.new(LibCairo.image_surface_get_format(@pointer.as(LibCairo::Surface*)).value)
+      Format.new(LibCairo.image_surface_get_format(@pointer.as(LibCairo::Surface*)))
     end
 
     # Returns the width of the surface in pixels.

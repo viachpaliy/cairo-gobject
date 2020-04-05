@@ -105,7 +105,7 @@ module Cairo
     # if the matrix collapses points together (it is degenerate), then it has no inverse and this function will fail.
     # Returns : If matrix has an inverse, modifies matrix to be the inverse matrix and returns Cairo::`Status`::SUCCESS. Otherwise, returns Cairo::`Status`::INVALID_MATRIX.  
     def invert : Status
-      Status.new(LibCairo.matrix_invert(to_unsafe).value)
+      Status.new(LibCairo.matrix_invert(to_unsafe))
     end
 
     # Multiplies the affine transformations in *a* and *b* together and stores the result in self.

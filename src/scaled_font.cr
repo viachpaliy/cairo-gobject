@@ -32,12 +32,12 @@ module Cairo
     # Checks whether an error has previously occurred for this ScaledFont.
     # Returns : Cairo::Status::SUCCESS or another error such as Cairo::Status::NO_MEMORY.  
     def status : Status
-      Status.new(LibCairo.scaled_font_status(@pointer.as(LibCairo::ScaledFont*)).value)
+      Status.new(LibCairo.scaled_font_status(@pointer.as(LibCairo::ScaledFont*)))
     end
 
     # Returns the type of the backend used to create a scaled font. 
     def type : FontType
-      FontType.new(LibCairo.scaled_font_get_type(@pointer.as(LibCairo::ScaledFont*)).value)
+      FontType.new(LibCairo.scaled_font_get_type(@pointer.as(LibCairo::ScaledFont*)))
     end
 
     # Return user data previously attached to ScaledFont using the specified key.

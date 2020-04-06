@@ -246,7 +246,7 @@ module Cairo
 
     # Sets the current line join style within the cairo context.
     # See `Cairo::LineJoin` for details about how the available line join styles are drawn. 
-    # As with the other stroke parameters, the current line join style is examined by `Context#stroke()`, `Context#stroke_extents()` but does not have any effect during path construction. 
+    # As with the other stroke parameters, the current line join style is examined by `Context#stroke()`, `Context#stroke_extents()`, but does not have any effect during path construction. 
     # The default line join style is Cairo::LineJoin::MITER. 
     # *line_join* : a line join style, specified as a `Cairo::LineJoin`
     # Returns self.
@@ -255,87 +255,181 @@ module Cairo
       self
     end
 
+    # Sets the dash pattern to be used by `Context#stroke()`.
+    # A dash pattern is specified by dashes, an array of positive values.
+    # Each value provides the length of alternate "on" and "off" portions of the stroke. The *offset* specifies an offset into the pattern at which the stroke begins. 
+    # Each "on" segment will have caps applied as if the segment were a separate sub-path.
+    # In particular, it is valid to use an "on" length of 0.0 with Cairo::LineCap::ROUND or Cairo::LineCap::SQUARE in order to distributed dots or squares along a path. 
+    # Note: The length values are in user-space units as evaluated at the time of stroking. This is not necessarily the same as the user space at the time of `Context#set_dash()`. 
+    # If *dashes*.size is 0 dashing is disabled. 
+    # If *dashes*.size is 1 a symmetric pattern is assumed with alternating on and off portions of the size specified by the single value in dashes. 
+    # If any value in dashes is negative, or if all values are 0, then context will be put into an error state with a status of Cairo::Status::INVALID_DASH. 
+    # *dashes* : an array specifying alternate lengths of on and off stroke portions.
+    # *offset* : an offset into the dash pattern at which the stroke should start.
+    # Returns self.
     def set_dash(dashes : Array(Float64), offset : Float64)
       LibCairo.set_dash(@pointer.as(LibCairo::Context*), dashes.to_unsafe, dashes.size, offset)
       self
     end
 
+    # Sets the current miter limit within the cairo context. 
+    # If the current line join style is set to Cairo::LineJoin::MITER (see `Context#line_join=()`),
+    # the miter limit is used to determine whether the lines should be joined with a bevel instead of a miter.
+    # Cairo divides the length of the miter by the line width. If the result is greater than the miter limit, the style is converted to a bevel. 
+    # As with the other stroke parameters, the current line miter limit is examined by `Context#stroke()`, `Context#stroke_extents()`, but does not have any effect during path construction. 
+    # The default miter limit value is 10.0, which will convert joins with interior angles less than 11 degrees to bevels instead of miters.
+    # For reference, a miter limit of 2.0 makes the miter cutoff at 60 degrees, and a miter limit of 1.414 makes the cutoff at 90 degrees. 
+    # A miter limit for a desired angle can be computed as: miter limit = 1/sin(angle/2) 
+    # *limit* : miter limit to set
+    # Returns self.
     def miter_limit=(limit : Float64)
       LibCairo.set_miter_limit(@pointer.as(LibCairo::Context*), limit)
       self
     end
 
-    def translate(tx : Float64, ty : Float64)
-      LibCairo.translate(@pointer.as(LibCairo::Context*), tx, ty)
+    # Modifies the current transformation matrix (CTM) by translating the user-space origin by (*tx*, *ty*).
+    # This offset is interpreted as a user-space coordinate according to the CTM in place before the new call to `Context#translate()`.
+    # In other words, the translation of the user-space origin takes place after any existing transformation.
+    # *tx* : amount to translate in the X direction
+    # *ty* : amount to translate in the Y direction
+    # Returns self.
+    def translate(tx : Int32 | Float64, ty : Int32 | Float64)
+      LibCairo.translate(@pointer.as(LibCairo::Context*), Float64.new(tx), Float64.new(ty))
       self
     end
 
-    def scale(sx : Float64, sy : Float64)
-      LibCairo.scale(@pointer.as(LibCairo::Context*), sx, sy)
+    # Modifies the current transformation matrix (CTM) by scaling the X and Y user-space axes by *sx* and *sy* respectively.
+    # The scaling of the axes takes place after any existing transformation of user space.
+    # *sx* :  scale factor for the X dimension
+    # *sy* :  scale factor for the Y dimension
+    # Returns self.
+    def scale(sx : Int32 | Float64, sy : Int32 | Float64)
+      LibCairo.scale(@pointer.as(LibCairo::Context*), Float64.new(sx), Float64.new(sy))
       self
     end
 
+    # Modifies the current transformation matrix (CTM) by rotating the user-space axes by angle radians.
+    # The rotation of the axes takes places after any existing transformation of user space.
+    # The rotation direction for positive angles is from the positive X axis toward the positive Y axis.
+    # *angle* : angle (in radians) by which the user-space axes will be rotated.
+    # Returns self.
     def rotate(angle : Float64)
       LibCairo.rotate(@pointer.as(LibCairo::Context*), angle)
       self
     end
 
+    # Modifies the current transformation matrix (CTM) by applying matrix as an additional transformation.
+    # The new transformation of user space takes place after any existing transformation.
+    # *matrix* :  a transformation to be applied to the user-space axes.
+    # Returns self.
     def transform(matrix : Matrix)
       LibCairo.transform(@pointer.as(LibCairo::Context*), matrix.to_unsafe)
     end
 
+    # Modifies the current transformation matrix (CTM) by setting it equal to *matrix*.
+    # *matrix* : a transformation matrix from user space to device space.
+    # Returns self.
     def matrix=(matrix : Matrix)
       LibCairo.set_matrix(@pointer.as(LibCairo::Context*), matrix.to_unsafe)
       self
     end
 
+    # Resets the current transformation matrix (CTM) by setting it equal to the identity matrix.
+    # That is, the user-space and device-space axes will be aligned and one user-space unit will transform to one device-space unit.
+    # Returns self.
     def identity_matrix
       LibCairo.identity_matrix(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Transforms a coordinate from user space to device space by multiplying the given point by the current transformation matrix (CTM).
+    # *x* : X value of coordinate (in/out parameter)
+    # *y* : Y value of coordinate (in/out parameter)
     def user_to_device(x : Float64*, y : Float64*)  : Void
       LibCairo.user_to_device(@pointer.as(LibCairo::Context*), x, y)
     end
 
-    def user_to_device_distance(x : Float64*, y : Float64*)  : Void
-      LibCairo.user_to_device_distance(@pointer.as(LibCairo::Context*), x, y)
+    # Transforms a distance vector from user space to device space.
+    # This function is similar to `Context#user_to_device()` except that the translation components of the CTM will be ignored when transforming (*dx*, *dy*).
+    # *dx* : X component of a distance vector (in/out parameter)
+    # *dy* : Y component of a distance vector (in/out parameter)
+    def user_to_device_distance(dx : Float64*, dy : Float64*)  : Void
+      LibCairo.user_to_device_distance(@pointer.as(LibCairo::Context*), dx, dy)
     end
 
+    # Transform a coordinate from device space to user space by multiplying the given point by the inverse of the current transformation matrix (CTM).
+    # *x* : X value of coordinate (in/out parameter)
+    # *y* : Y value of coordinate (in/out parameter)
     def device_to_user(x : Float64*, y : Float64*)  : Void
       LibCairo.device_to_user(@pointer.as(LibCairo::Context*), x, y)
     end
 
-    def device_to_user_distance(x : Float64*, y : Float64*)  : Void
-      LibCairo.device_to_user_distance(@pointer.as(LibCairo::Context*), x, y)
+    # Transform a distance vector from device space to user space.
+    # This function is similar to `Context#device_to_user()` except that the translation components of the inverse CTM will be ignored when transforming (*dx*, *dy*). 
+    # *dx* : X component of a distance vector (in/out parameter)
+    # *dy* : Y component of a distance vector (in/out parameter)
+    def device_to_user_distance(dx : Float64*, dy : Float64*)  : Void
+      LibCairo.device_to_user_distance(@pointer.as(LibCairo::Context*), dx, dy)
     end
 
+    # Clears the current path. After this call there will be no path and no current point.
+    # Returns self.
     def new_path
       LibCairo.new_path(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Begins a new sub-path. After this call the current point will be (*x*, *y*).
+    # *x* : the X coordinate of the new position.
+    # *y* : the Y coordinate of the new position.
+    # Returns self.
     def move_to(x : Int32 | Float64, y : Int32 | Float64)
       LibCairo.move_to(@pointer.as(LibCairo::Context*), Float64.new(x), Float64.new(y))
       self
     end
-   
+
+    # Begins a new sub-path. Note that the existing path is not affected. After this call there will be no current point. 
+    # In many cases, this call is not needed since new sub-paths are frequently started with `Context#move_to()`. 
+    # A call to `Context#new_sub_path()` is particularly useful when beginning a new sub-path with one of the `Context#arc()` calls.
+    # This makes things easier as it is no longer necessary to manually compute the arc's initial coordinates for a call to `Context#move_to()`. 
+    # Returns self.
     def new_sub_path
       LibCairo.new_sub_path(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Adds a line to the path from position(*x1*, *y1*) to position (*x2*, *y2*) in user-space coordinates. After this call the current point will be (*x2*, *y2*).
+    # *x1* : the X coordinate of the start of the new line
+    # *y1* : the Y coordinate of the start of the new line
+    # *x2* : the X coordinate of the end of the new line
+    # *y2* : the Y coordinate of the end of the new line
+     # Returns self.
     def line(x1 : Int32 | Float64, y1 : Int32 | Float64, x2 : Int32 | Float64, y2 : Int32 | Float64)
       LibCairo.move_to(@pointer.as(LibCairo::Context*), Float64.new(x1), Float64.new(y1))
       LibCairo.line_to(@pointer.as(LibCairo::Context*), Float64.new(x2), Float64.new(y2))
       self
     end
 
+    # Adds a line to the path from the current point to position (*x*, *y*) in user-space coordinates. After this call the current point will be (*x*, *y*). 
+    # If there is no current point before the call to `Context#line_to()* this function will behave as `Context#move_to(x, y)`. 
+    # *x* : the X coordinate of the end of the new line
+    # *y* : the Y coordinate of the end of the new line
+    # Returns self.
     def line_to(x : Int32 | Float64, y : Int32 | Float64)
       LibCairo.line_to(@pointer.as(LibCairo::Context*), Float64.new(x), Float64.new(y))
       self
     end
 
+    # Adds a cubic Bézier spline to the path from the current point to position (*x3*, *y3*) in user-space coordinates,
+    # using (*x1*, *y1*) and (*x2*, *y2*) as the control points. After this call the current point will be (*x3*, *y3*). 
+    # If there is no current point before the call to `Context#curve_to()` this function will behave as if preceded by a call to `Context#move_to(x1, y1)`. 
+    # *x1* : the X coordinate of the first control point
+    # *y1* : the Y coordinate of the first control point
+    # *x2* : the X coordinate of the second control point
+    # *y2* : the Y coordinate of the second control point
+    # *x3* : the X coordinate of the end of the curve
+    # *y3* : the Y coordinate of the end of the curve
+    # Returns self.
     def curve_to(x1 : Int32 | Float64, y1 : Int32 | Float64,
                  x2 : Int32 | Float64, y2 : Int32 | Float64,
                  x3 : Int32 | Float64, y3 : Int32 | Float64)
@@ -343,18 +437,59 @@ module Cairo
       self
     end
 
+    # Adds a circular arc of the given *radius* to the current path.
+    # The arc is centered at (*xc*, *yc*), begins at *angle1* and proceeds in the direction of increasing angles to end at *angle2*.
+    # If *angle2* is less than *angle1* it will be progressively increased by 2*Math::PI until it is greater than *angle1*. 
+    # If there is a current point, an initial line segment will be added to the path to connect the current point to the beginning of the arc.
+    # If this initial line is undesired, it can be avoided by calling `Context#new_sub_path()` before calling `Context#arc()`. 
+    # Angles are measured in radians. An angle of 0.0 is in the direction of the positive X axis (in user space).
+    # An angle of Math::PI/2.0 radians (90 degrees) is in the direction of the positive Y axis (in user space).
+    # Angles increase in the direction from the positive X axis toward the positive Y axis. So with the default transformation matrix, angles increase in a clockwise direction. 
+    # (To convert from degrees to radians, use degrees * (Math::PI / 180.).) 
+    # This method gives the arc in the direction of increasing angles; see `Context#arc_negative()` to get the arc in the direction of decreasing angles. 
+    # The arc is circular in user space. To achieve an elliptical arc, you can scale the current transformation matrix by different amounts in the X and Y directions.
+    # For example, to draw an ellipse in the box given by x, y, width, height: 
+    # ```
+    # context.save
+    # context.translate (x + width / 2., y + height / 2.)
+    # context.scale (width / 2., height / 2.)
+    # context.arc (0., 0., 1., 0., 2 * Math::PI)
+    # context.restore 
+    # ```
+    # *xc* : X position of the center of the arc
+    # *yc* : Y position of the center of the arc
+    # *radius* : the radius of the arc
+    # *angle1* : the start angle, in radians
+    # *angle2* : the end angle, in radians
+    # Returns self.
     def arc(xc : Int32 | Float64, yc : Int32 | Float64, radius : Int32 | Float64,
             angle1 : Float64, angle2 : Float64)
       LibCairo.arc(@pointer.as(LibCairo::Context*), Float64.new(xc), Float64.new(yc), Float64.new(radius), angle1, angle2)
       self
     end
 
+    # Adds a circular arc of the given *radius* to the current path.
+    # The arc is centered at (*xc*, *yc*), begins at *angle1* and proceeds in the direction of decreasing angles to end at *angle2*.
+    # If *angle2* is greater than *angle1* it will be progressively decreased by 2*Math::PI until it is less than *angle1*. 
+    # See `Context#arc()` for more details. This function differs only in the direction of the arc between the two angles. 
+    # *xc* : X position of the center of the arc
+    # *yc* : Y position of the center of the arc
+    # *radius* : the radius of the arc
+    # *angle1* : the start angle, in radians
+    # *angle2* : the end angle, in radians
+    # Returns self.
     def arc_negative(xc : Int32 | Float64, yc : Int32 | Float64,
                      radius : Int32 | Float64, angle1 : Float64, angle2 : Float64)
       LibCairo.arc_negative(@pointer.as(LibCairo::Context*),  Float64.new(xc), Float64.new(yc), Float64.new(radius), angle1, angle2)
       self
     end
 
+    # Begin a new sub-path. After this call the current point will offset by (*dx*, *dy*). 
+    # Given a current point of (x, y), `Context#rel_move_to(dx, dy)` is logically equivalent to `Context#move_to(x + dx, y + dy)`. 
+    # It is an error to call this function with no current point. Doing so will cause context to shutdown with a status of `Cairo::Status::NO_CURRENT_POINT`. 
+    # *dx* : the X offset
+    # *dy* : the Y offset
+    # Returns self
     def rel_move_to(dx : Int32 | Float64, dy : Int32 | Float64)
       LibCairo.rel_move_to(@pointer.as(LibCairo::Context*), Float64.new(dx), Float64.new(dy))
       self

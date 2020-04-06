@@ -486,7 +486,7 @@ module Cairo
 
     # Begin a new sub-path. After this call the current point will offset by (*dx*, *dy*). 
     # Given a current point of (x, y), `Context#rel_move_to(dx, dy)` is logically equivalent to `Context#move_to(x + dx, y + dy)`. 
-    # It is an error to call this function with no current point. Doing so will cause context to shutdown with a status of `Cairo::Status::NO_CURRENT_POINT`. 
+    # It is an error to call this method with no current point. Doing so will cause context to shutdown with a status of `Cairo::Status::NO_CURRENT_POINT`. 
     # *dx* : the X offset
     # *dy* : the Y offset
     # Returns self
@@ -495,11 +495,31 @@ module Cairo
       self
     end
 
+    # Relative-coordinate version of `Context#line_to()`.
+    # Adds a line to the path from the current point to a point that is offset from the current point by (*dx*, *dy*) in user space.
+    # After this call the current point will be offset by (*dx*, *dy*). 
+    # Given a current point of (x, y), `Context#rel_line_to(dx, dy)` is logically equivalent to `Context#line_to(x + dx, y + dy)`. 
+    # It is an error to call this method with no current point. Doing so will cause context to shutdown with a status of `Cairo::Status::NO_CURRENT_POINT`. 
+    # *dx* : the X offset to the end of the new line
+    # *dy* : the Y offset to the end of the new line
+    # Returns self
     def rel_line_to(dx : Int32 | Float64, dy : Int32 | Float64)
       LibCairo.rel_line_to(@pointer.as(LibCairo::Context*), Float64.new(dx), Float64.new(dy))
       self
     end
 
+    # Relative-coordinate version of `Context#curve_to()`. All offsets are relative to the current point.
+    # Adds a cubic Bézier spline to the path from the current point to a point offset from the current point by (*dx3*, *dy3*),
+    # using points offset by (*dx1*, *dy1*) and (*dx2*, *dy2*) as the control points. After this call the current point will be offset by (*dx3*, *dy3*). 
+    # Given a current point of (x, y), `Context#rel_curve_to(dx1, dy1, dx2, dy2, dx3, dy3)` is logically equivalent to `Context#curve_to(x+dx1, y+dy1, x+dx2, y+dy2, x+dx3, y+dy3)`. 
+    # It is an error to call this method with no current point. Doing so will cause context to shutdown with a status of `Cairo::Status::NO_CURRENT_POINT`.
+    # *dx1* : the X offset to the first control point
+    # *dy1* : the Y offset to the first control point
+    # *dx2* : the X offset to the second control point
+    # *dy2* : the Y offset to of the second control point
+    # *dx3* : the X offset to of the end of the curve
+    # *dy3* : the Y offset to of the end of the curve
+    # Returns self.
     def rel_curve_to(dx1 : Int32 | Float64, dy1 : Int32 | Float64,
                      dx2 : Int32 | Float64, dy2 : Int32 | Float64,
                      dx3 : Int32 | Float64, dy3 : Int32 | Float64)
@@ -508,73 +528,149 @@ module Cairo
       self
     end
 
+    # Adds a closed sub-path rectangle of the given size to the current path at position (x, y) in user-space coordinates.
+    # *x* : the X coordinate of the top left corner of the rectangle
+    # *y* : the Y coordinate to the top left corner of the rectangle
+    # *width* : the width of the rectangle
+    # *height* : the height of the rectangle
+    # Returns self.
     def rectangle(x : Int32 | Float64, y : Int32 | Float64, width : Int32 | Float64, height : Int32 | Float64)
       LibCairo.rectangle(@pointer.as(LibCairo::Context*), Float64.new(x), Float64.new(y), Float64.new(width), Float64.new(height))
       self
     end
 
+    # Adds a line segment to the path from the current point to the beginning of the current sub-path,
+    # (the most recent point passed to `Context#move_to()`), and closes this sub-path. After this call the current point will be at the joined endpoint of the sub-path. 
+    # The behavior of `Context#close_path()` is distinct from simply calling `Context#line_to()` with the equivalent coordinate in the case of stroking.
+    # When a closed sub-path is stroked, there are no caps on the ends of the sub-path. Instead, there is a line join connecting the final and initial segments of the sub-path. 
+    # If there is no current point before the call to `Context#close_path()`, this function will have no effect. 
+    # Returns self.
     def close_path
       LibCairo.close_path(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Computes a bounding box in user-space coordinates covering the points on the current path.
+    # If the current path is empty, returns an empty rectangle ((0,0), (0,0)). Stroke parameters, fill rule, surface dimensions and clipping are not taken into account. 
+    # Contrast with `Context#fill_extents()` and `Context#stroke_extents()` which return the extents of only the area that would be "inked" by the corresponding drawing operations. 
+    # The result of `Context#path_extents()` is defined as equivalent to the limit of `Context#stroke_extents()` with Cairo::LineCap::ROUND as the line width approaches 0.0,
+    # (but never reaching the empty-rectangle returned by `Context#stroke_extents()` for a line width of 0.0). 
+    # Specifically, this means that zero-area sub-paths such as `Context#move_to()`,`Context#line_to()` segments, (even degenerate cases where the coordinates to both calls are identical),
+    # will be considered as contributing to the extents. However, a lone `Context#move_to()` will not contribute to the results of `Context#path_extents()`. 
+    # *x1* : the left of the resulting extents (in/out parameter)
+    # *y1* : the top of the resulting extents (in/out parameter)
+    # *x2* : the right of the resulting extents (in/out parameter)
+    # *y2* : the bottom of the resulting extents (in/out parameter)
+    # Returns self.
     def path_extents(x1 : Float64*, y1 : Float64*, x2 : Float64*, y2 : Float64*) 
       LibCairo.path_extents(@pointer.as(LibCairo::Context*), x1, y1, x2, y2)
       self
     end
 
+    # A drawing operator that paints the current source everywhere within the current clip region.
+    # Returns self.
     def paint
       LibCairo.paint(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # A drawing operator that paints the current source everywhere within the current clip region using a mask of constant alpha value *alpha*.
+    # The effect is similar to `Context#paint()`, but the drawing is faded out using the alpha value.
+    # *alpha* : alpha value, between 0 (transparent) and 1 (opaque)
+    # Returns self.
     def paint_with_alpha(alpha : Float64)
       LibCairo.paint_with_alpha(@pointer.as(LibCairo::Context*), alpha)
       self
     end
 
+    # A drawing operator that paints the current source using the alpha channel of *pattern* as a mask.
+    # (Opaque areas of *pattern* are painted with the source, transparent areas are not painted.)
+    # *pattern* : a `Cairo::Pattern`
+    # Returns self.
     def mask(pattern : Pattern)
       LibCairo.mask(@pointer.as(LibCairo::Context*), pattern.to_unsafe)
       self
     end
 
-    def mask_surface(surface : Surface, surface_x : Float64, surface_y : Float64)
-      LibCairo.mask_surface(surface.to_unsafe, surface_x, surface_y)
+    # A drawing operator that paints the current source using the alpha channel of *surface* as a mask.
+    # (Opaque areas of *surface* are painted with the source, transparent areas are not painted.)
+    # *surface* : a `Cairo::Surface`
+    # *surface_x* : the X coordinate at which to place the origin of surface
+    # *surface_y* : the Y coordinate at which to place the origin of surface
+    # Returns self.
+    def mask_surface(surface : Surface, surface_x : Int32 | Float64, surface_y : Int32 | Float64)
+      LibCairo.mask_surface(surface.to_unsafe, Float64.new(surface_x), Float64.new(surface_y))
       self
     end
 
+    # A drawing operator that strokes the current path according to the current line width, line join, line cap, and dash settings.
+    # After `Context#stroke()`, the current path will be cleared from the cairo context.
+    # See `Context#line_width=()`, `Context#line_join=()`, `Context#line_cap=()`, `Context#set_dash()`, and `Context#stroke_preserve()`. 
+    # Note: Degenerate segments and sub-paths are treated specially and provide a useful result. These can result in two different situations: 
+    # 1. Zero-length "on" segments set in `Context#set_dash()` :
+    #       If the cap style is Cairo::LineCap::ROUND or  Cairo::LineCap::SQUARE then these segments will be drawn as circular dots or squares respectively.
+    #       In the case of Cairo::LineCap::SQUARE, the orientation of the squares is determined by the direction of the underlying path. 
+    # 2. A sub-path created by `Context#move_to()` followed by either a `Context#close_path()` or one or more calls to `Context#line_to()` to the same coordinate as the `Context#move_to()`.
+    #       If the cap style is Cairo::LineCap::ROUND then these sub-paths will be drawn as circular dots.
+    #       Note that in the case of Cairo::LineCap::SQUARE a degenerate sub-path will not be drawn at all, (since the correct orientation is indeterminate). 
+    # In no case will a cap style of Cairo::LineCap::BUTT cause anything to be drawn in the case of either degenerate segments or sub-paths. 
+    # Returns self.
     def stroke
       LibCairo.stroke(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # A drawing operator that strokes the current path according to the current line width, line join, line cap, and dash settings.
+    # Unlike `Context#stroke()`, `Context#stroke_preserve()` preserves the path within the cairo context.
+    # See `Context#line_width=()`, `Context#line_join=()`, `Context#line_cap=()`, `Context#set_dash()`, and `Context#stroke()`.
+    # Returns self.
     def stroke_preserve
       LibCairo.stroke_preserve(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # A drawing operator that fills the current path according to the current fill rule, (each sub-path is implicitly closed before being filled).
+    # After `Context#fill()`, the current path will be cleared from the cairo context. See `Context#fill_rule=()` and `Context#fill_preserve()`.
+    # Returns self.
     def fill
       LibCairo.fill(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # A drawing operator that fills the current path according to the current fill rule, (each sub-path is implicitly closed before being filled).
+    # Unlike `Context#fill()`, `Context#fill_preserve()` preserves the path within the cairo context. 
+    # See `Context#fill_rule=()` and `Context#fill()`. 
+    # Returns self.
     def fill_preserve
       LibCairo.fill_preserve(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Emits the current page for backends that support multiple pages, but doesn't clear it, so, the contents of the current page will be retained for the next page too.
+    # Use `Context#show_page()` if you want to get an empty page after the emission. 
+    # This is a convenience function that simply calls `Cairo::Surface#copy_page()` on context's target. 
+    # Returns self.
     def copy_page
       LibCairo.copy_page(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Emits and clears the current page for backends that support multiple pages.
+    # Use `Context#copy_page()` if you don't want to clear the page. 
+    # This is a convenience function that simply calls `Cairo::Surface#show_page()` on context's target. 
+    # Returns self.
     def show_page
       LibCairo.show_page(@pointer.as(LibCairo::Context*))
       self
     end
 
-    def in_stroke(x : Float64, y : Float64) : Bool
-      LibCairo.in_stroke(@pointer.as(LibCairo::Context*), x, y) == 1
+    # Tests whether the given point is inside the area that would be affected by a `Context#stroke()` operation given the current path and stroking parameters.
+    # Surface dimensions and clipping are not taken into account.
+    # *x* : the X coordinate of the point to test
+    # *y* : the Y coordinate of the point to test
+    # Returns : A true if the point is inside, or false if outside.  
+    def in_stroke(x : Int32 | Float64, y : Int32 | Float64) : Bool
+      LibCairo.in_stroke(@pointer.as(LibCairo::Context*), Float64.new(x), Float64.new(y)) == 1
     end
 
     def in_fill(x : Float64, y : Float64) : Bool

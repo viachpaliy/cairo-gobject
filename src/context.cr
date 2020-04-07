@@ -920,61 +920,90 @@ module Cairo
       LibCairo.get_current_point(@pointer.as(LibCairo::Context*), x, y)
     end
 
-
+    # Returns the current fill rule, as set by `Context#fill_rule=()`
     def fill_rule : FillRule
       FillRule.new(LibCairo.get_fill_rule(@pointer.as(LibCairo::Context*)))
     end
 
+    # Returns the current line width value exactly as set by `Context#line_width=()`.
+    # Note that the value is unchanged even if the CTM has changed between the calls to `Context#line_width=()` and `Context#line_width()`.
     def line_width : Float64
       LibCairo.get_line_width(@pointer.as(LibCairo::Context*))
     end
 
+    # Returns the current line cap style, as set by `Context#line_cap=()`.
     def line_cap : LineCap
       LineCap.new(LibCairo.get_line_cap(@pointer.as(LibCairo::Context*)))
     end
 
+    # Returns the current line join style, as set by `Context#line_join=()`.
     def line_join : LineJoin
       LineJoin.new(LibCairo.get_line_join(@pointer.as(LibCairo::Context*)))
     end
 
+    # Returns the current miter limit, as set by `Context#miter_limit=()`.
     def miter_limit : Float64
       LibCairo.get_miter_limit(@pointer.as(LibCairo::Context*))
     end
 
+    # Returns the length of the dash array in context (0 if dashing is not currently in effect). 
     def dash_count : Int32
       LibCairo.get_dash_count(@pointer.as(LibCairo::Context*))
     end
-     
+
+    # Returns the current transformation matrix (CTM).     
     def matrix : Matrix
       LibCairo.get_matrix(@pointer.as(LibCairo::Context*), out matrix)
       Matrix.new(matrix)
     end
 
+    # Returns the target surface for the cairo context as passed to `Context#create()`. 
+    # This method will always return a valid pointer, but the result can be a "nil" surface if the context is already in an error state,
+    # (ie. context.status != Cairo::Status::SUCCESS).
+    # A nil surface is indicated by Cairo::Surface.status != Cairo::Status::SUCCESS. 
     def target : Surface
       Surface.new(LibCairo.get_target(@pointer.as(LibCairo::Context*)))
     end
 
+    # Returns the current destination surface for the context.
+    # This is either the original target surface as passed to `Context#create()` or the target surface for the current group as started
+    # by the most recent call to `Context#push_group()` or `Context#push_group_with_content()`. 
+    # This method will always return a valid pointer, but the result can be a "nil" surface if the context is already in an error state,
+    # (ie. context.status != Cairo::Status::SUCCESS).
+    # A nil surface is indicated by Cairo::Surface.status != Cairo::Status::SUCCESS.
     def group_target : Surface
       Surface.new(LibCairo.get_group_target(@pointer.as(LibCairo::Context*)))
     end
 
+    # Creates a copy of the current path and returns it to the user as a `Cairo::Path`. 
+    # This method will always return a valid pointer, but the result will have no data (data==NULL and num_data==0), if either of the following conditions hold: 
+    #     1.If there is insufficient memory to copy the path. In this case path.status will be set to Cairo::Status::NO_MEMORY.
+    #     2.If the context is already in an error state. In this case path.status will contain the same status that would be returned by `Context#status()`
     def copy_path : Path
       Path.new(LibCairo.copy_path(@pointer.as(LibCairo::Context*)))
     end
 
+    # Returns a flattened copy of the current path and returns it to the user as a `Cairo::Path`. 
+    # This function is like `Context#copy_path()` except that any curves in the path will be approximated with piecewise-linear approximations, (accurate to within the current tolerance value).
+    # That is, the result is guaranteed to not have any elements of type CAIRO_PATH_CURVE_TO which will instead be replaced by a series of CAIRO_PATH_LINE_TO elements. 
     def copy_path_flat : Path
       Path.new(LibCairo.copy_path_flat(@pointer.as(LibCairo::Context*)))
     end
 
+    # Appends the *path* onto the current path.
+    # The path may be either the return value from one of `Context#copy_path()` or `Contex#copy_path_flat()` or it may be constructed manually.
+    # See `Cairo::Path` for details on how the path data structure should be initialized, and note that path.status must be initialized to Cairo::Status::SUCCESS.
+    # *path* : a Cairo::Path to be appended.
+    # Returns self.
     def append(path : Path)
       LibCairo.append_path(@pointer.as(LibCairo::Context*), path.to_unsafe)
       self
     end
 
+    # Checks whether an error has previously occurred for this context.
     def status : Status
       Status.new(LibCairo.status(@pointer.as(LibCairo::Context*)))
     end
-
 
   end
 end

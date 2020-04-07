@@ -841,7 +841,7 @@ module Cairo
     # *font_face* : a `Cairo::FontFace`, or nil to restore to the default font.
     # Returns self.
     def font_face=(font_face : FontFace | Nil = nil)
-      LibCairo.set_font_face(@pointer.as(LibCairo::Context*), font_face.nil? nil : font_face.to_unsafe)
+      LibCairo.set_font_face(@pointer.as(LibCairo::Context*), font_face.to_unsafe)
       self
     end
 

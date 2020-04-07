@@ -89,7 +89,7 @@ module Cairo
       Matrix.new(matrix)
     end
 
-    # Returns the CTM with which ScaledFont was created. 
+    # Returns the current transformation matrix (CTM) with which ScaledFont was created. 
     def ctm : Matrix
       LibCairo.scaled_font_get_ctm(@pointer.as(LibCairo::ScaledFont*), out ctm)
       Matrix.new(ctm)

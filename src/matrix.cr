@@ -2,6 +2,12 @@ module Cairo
 
   # Class for generic matrix operations
   class Matrix
+
+    # Returns a new Cairo::Matrix
+    def self.new : self
+      ptr = Pointer(UInt8).malloc(48, 0u8)
+      new(ptr.as(LibCairo::Matrix*)) 
+    end
  
     # Returns a new Cairo::Matrix
     # *xx* : xx component of the affine transformation

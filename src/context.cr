@@ -668,139 +668,261 @@ module Cairo
     # Surface dimensions and clipping are not taken into account.
     # *x* : the X coordinate of the point to test
     # *y* : the Y coordinate of the point to test
-    # Returns : A true if the point is inside, or false if outside.  
+    # Returns : a true if the point is inside, or false if outside.  
     def in_stroke(x : Int32 | Float64, y : Int32 | Float64) : Bool
       LibCairo.in_stroke(@pointer.as(LibCairo::Context*), Float64.new(x), Float64.new(y)) == 1
     end
 
-    def in_fill(x : Float64, y : Float64) : Bool
-      LibCairo.in_fill(@pointer.as(LibCairo::Context*), x, y) == 1
-    end
-     
-    def in_clip(x : Float64, y : Float64) : Bool
-      LibCairo.in_clip(@pointer.as(LibCairo::Context*), x, y) == 1
+    # Tests whether the given point is inside the area that would be affected by a `Context#fill()` operation given the current path and filling parameters.
+    # Surface dimensions and clipping are not taken into account.
+    # *x* : the X coordinate of the point to test
+    # *y* : the Y coordinate of the point to test
+    # Returns : a true if the point is inside, or false if outside.  
+    def in_fill(x : Int32 | Float64, y : Int32 | Float64) : Bool
+      LibCairo.in_fill(@pointer.as(LibCairo::Context*),Float64.new(x), Float64.new(y)) == 1
     end
 
+    # Tests whether the given point is inside the area that would be visible through the current clip, i.e. the area that would be filled by a `Context#paint()` operation.
+    # *x* : the X coordinate of the point to test
+    # *y* : the Y coordinate of the point to test
+    # Returns : a true if the point is inside, or false if outside. 
+    def in_clip(x : Int32 | Float64, y : Int32 | Float64) : Bool
+      LibCairo.in_clip(@pointer.as(LibCairo::Context*),Float64.new(x), Float64.new(y)) == 1
+    end
+
+    # Computes a bounding box in user coordinates covering the area that would be affected, (the "inked" area),
+    # by a `Context#stroke()` operation given the current path and stroke parameters.
+    # If the current path is empty, returns an empty rectangle ((0,0), (0,0)). Surface dimensions and clipping are not taken into account. 
+    # Note that if the line width is set to exactly zero, then `Context#stroke_extents()` will return an empty rectangle.
+    # Contrast with `Context#path_extents()` which can be used to compute the non-empty bounds as the line width approaches zero. 
+    # Note that `Context#stroke_extents()` must necessarily do more work to compute the precise inked areas in light of the stroke parameters,
+    # so `Context#path_extents()` may be more desirable for sake of performance if non-inked path extents are desired. 
+    # *x1* : the left of the resulting extents (in/out parameter)
+    # *y1* : the top of the resulting extents (in/out parameter)
+    # *x2* : the right of the resulting extents (in/out parameter)
+    # *y2* : the bottom of the resulting extents (in/out parameter)
+    # Returns self.
     def stroke_extents(x1 : Float64*, y1 : Float64*, x2 : Float64*, y2 : Float64*) 
       LibCairo.stroke_extents(@pointer.as(LibCairo::Context*), x1, y1, x2, y2)
       self
     end
 
-    def fill_extents(x1 : Float64, y1 : Float64, x2 : Float64, y2 : Float64)
+    # Computes a bounding box in user coordinates covering the area that would be affected, (the "inked" area),
+    # by a `Context#fill()` operation given the current path and fill parameters.
+    # If the current path is empty, returns an empty rectangle ((0,0), (0,0)). Surface dimensions and clipping are not taken into account. 
+    # Contrast with `Context#path_extents()`, which is similar, but returns non-zero extents for some paths with no inked area, (such as a simple line segment). 
+    # Note that `Context#fill_extents()` must necessarily do more work to compute the precise inked areas in light of the fill rule,
+    # so `Context#path_extents()` may be more desirable for sake of performance if the non-inked path extents are desired. 
+    # *x1* : the left of the resulting extents (in/out parameter)
+    # *y1* : the top of the resulting extents (in/out parameter)
+    # *x2* : the right of the resulting extents (in/out parameter)
+    # *y2* : the bottom of the resulting extents (in/out parameter)
+    # Returns self.
+    def fill_extents(x1 : Float64*, y1 : Float64*, x2 : Float64*, y2 : Float64*)
       LibCairo.fill_extents(@pointer.as(LibCairo::Context*), x1, y1, x2, y2)
       self
     end
 
+    # Resets the current clip region to its original, unrestricted state.
+    # That is, set the clip region to an infinitely large shape containing the target surface.
+    # Equivalently, if infinity is too hard to grasp, one can imagine the clip region being reset to the exact bounds of the target surface. 
+    # Note that code meant to be reusable should not call `Context#reset_clip()` as it will cause results unexpected by higher-level code which calls `Context#clip()`.
+    # Consider using `Context#save()` and `Context#restore()` around `Context#clip()` as a more robust means of temporarily restricting the clip region. 
+    # Returns self.
     def reset_clip
       LibCairo.reset_clip(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Establishes a new clip region by intersecting the current clip region
+    # with the current path as it would be filled by `Context#fill()` and according to the current fill rule (see `Context#fill_rule=()`). 
+    # After `Context#clip()`, the current path will be cleared from the cairo context. 
+    # The current clip region affects all drawing operations by effectively masking out any changes to the surface that are outside the current clip region. 
+    # Calling `Context#clip()` can only make the clip region smaller, never larger.
+    # But the current clip is part of the graphics state, so a temporary restriction of the clip region can be achieved by calling `Context#clip()` within a `Context#save()`/`Context#restore()` pair.
+    # The only other means of increasing the size of the clip region is `Context#reset_clip()`. 
+    # Returns self.
     def clip
       LibCairo.clip(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Establishes a new clip region by intersecting the current clip region
+    # with the current path as it would be filled by `Context#fill()` and according to the current fill rule (see `Context#fill_rule=()`). 
+    # Unlike `Context#clip()`, `Context#clip_preserve()` preserves the path within the cairo context. 
+    # The current clip region affects all drawing operations by effectively masking out any changes to the surface that are outside the current clip region. 
+    # Calling `Context#clip_preserve()` can only make the clip region smaller, never larger.
+    # But the current clip is part of the graphics state, so a temporary restriction of the clip region can be achieved by calling `Context#clip_preserve()` within a `Context#save()`/`Context#restore()` pair.
+    # The only other means of increasing the size of the clip region is cairo_reset_clip(). 
+    # Returns self.
     def clip_preserve
       LibCairo.clip_preserve(@pointer.as(LibCairo::Context*))
       self
     end
 
+    # Computes a bounding box in user coordinates covering the area inside the current clip.
+    # *x1* : the left of the resulting extents (in/out parameter)
+    # *y1* : the top of the resulting extents (in/out parameter)
+    # *x2* : the right of the resulting extents (in/out parameter)
+    # *y2* : the bottom of the resulting extents (in/out parameter)
+    # Returns self.
     def clip_extents(x1 : Float64*, y1 : Float64*, x2 : Float64*, y2 : Float64*)
       LibCairo.clip_extents(@pointer.as(LibCairo::Context*), x1, y1, x2, y2)
       self
     end
-    
+
+    # Selects a family and style of font from a simplified description as a family name, slant and weight.
+    # Cairo provides no operation to list available family names on the system,
+    # but the standard CSS2 generic family names, ("serif", "sans-serif", "cursive", "fantasy", "monospace"), are likely to work as expected. 
+    # If family starts with the string "cairo:", or if no native font backends are compiled in, cairo will use an internal font family.
+    # The internal font family recognizes many modifiers in the family string, most notably, it recognizes the string "monospace".
+    # That is, the family name "cairo:monospace" will use the monospace version of the internal font family. 
+    # *family* : a font family name.
+    # *slant* : the slant for the font.
+    # *weight* : the weight for the font.
+    # Returns self.
     def select_font_face(family : String, slant : FontSlant, weight : FontWeight)
       LibCairo.select_font_face(@pointer.as(LibCairo::Context*), family.to_unsafe, slant, weight)
       self
     end
 
+    # Sets the current font matrix to a scale by a factor of size, replacing any font matrix previously set with `Context#font_size=()` or `Context#font_matrix=()`.
+    # This results in a font size of size user space units. (More precisely, this matrix will result in the font's em-square being a size by size square in user space.) 
+    # If text is drawn without a call to `Context#font_size=()`, (nor `Context#font_matrix=()` nor `Context#scaled_font=()`), the default font size is 10.0. 
+    # *size* : the new font size, in user space units.
+    # Returns self.
     def font_size=(size : Float64)
       LibCairo.set_font_size(@pointer.as(LibCairo::Context*), size)
       self
     end
 
+    # Returns the current font matrix. 
     def font_matrix : Matrix
       matrix = Matrix.new
       LibCairo.get_font_matrix(@pointer.as(LibCairo::Context*), matrix.to_unsafe)
       matrix
     end
 
+    # Sets the current font matrix to *matrix*.
+    # The font matrix gives a transformation from the design space of the font (in this space, the em-square is 1 unit by 1 unit) to user space.
+    # Normally, a simple scale is used (see `Context#font_size=()`), but a more complex font matrix can be used to shear the font or stretch it unequally along the two axes.
+    # *matrix* :  a `Cairo::Matrix` describing a transform to be applied to the current font.
+    # Returns self.
     def font_matrix=(matrix : Matrix)
       LibCairo.set_font_matrix(@pointer.as(LibCairo::Context*), matrix.to_unsafe)
       self
     end
 
+    # Retrieves font rendering options set via `Context#font_options=()`.
+    # Note that the returned options do not include any options derived from the underlying surface; they are literally the options passed to `Context#font_options=()`. 
     def font_options : FontOptions
-      font_options = FontOptions.new
+      font_options = FontOptions.new LibCairo::FontOptions.new
       LibCairo.get_font_options(@pointer.as(LibCairo::Context*), font_options.to_unsafe)
       font_options
     end
 
+    # Sets a set of custom font rendering options for the context.
+    # Rendering options are derived by merging these options with the options derived from underlying surface;
+    # if the value in options has a default value (like Cairo::Antialias::DEFAULT), then the value from the surface is used.
+    # *options* : the font options to use.
+    # Returns self.
     def font_options=(options : FontOptions)
       LibCairo.set_font_options(@pointer.as(LibCairo::Context*), options.to_unsafe)
       self
     end
 
+    # Returns the current font face for the context.
     def font_face : FontFace
       font_face = LibCairo.get_font_face(@pointer.as(LibCairo::Context*))
       FontFace.new(font_face)
     end
 
-    def font_face=(font_face : FontFace)
-      LibCairo.set_font_face(@pointer.as(LibCairo::Context*), font_face.to_unsafe)
+    # Replaces the current cairo_font_face_t object in the cairo_t with font_face.
+    # *font_face* : a `Cairo::FontFace`, or nil to restore to the default font.
+    # Returns self.
+    def font_face=(font_face : FontFace | Nil = nil)
+      LibCairo.set_font_face(@pointer.as(LibCairo::Context*), font_face.nil? nil : font_face.to_unsafe)
       self
     end
 
+    # Returns current scaled font for the context.
     def scaled_font : ScaledFont
       scaled_font = LibCairo.get_scaled_font(@pointer.as(LibCairo::Context*))
       ScaledFont.new(scaled_font)
     end
 
+    # Replaces the current font face, font matrix, and font options in the context with those of the `Cairo::ScaledFont`.
+    # Except for some translation, the current CTM of the context should be the same as that of the `Cairo::ScaledFont`, which can be accessed using `Cairo::ScaledFont#ctm()`.
+    # *scaled_font* : a Cairo::ScaledFont.
+    # Returns self.
     def scaled_font=(scaled_font : ScaledFont)
       LibCairo.set_scaled_font(@pointer.as(LibCairo::Context*), scaled_font.value)
       self
     end
 
+    # A drawing operator that generates the shape from a string of UTF-8 characters, rendered according to the current font_face, font_size (font_matrix), and font_options. 
+    # This function first computes a set of glyphs for the string of text. The first glyph is placed so that its origin is at the current point.
+    # The origin of each subsequent glyph is offset from that of the previous glyph by the advance values of the previous glyph. 
+    # After this call the current point is moved to the origin of where the next glyph would be placed in this same progression.
+    # That is, the current point will be at the origin of the final glyph offset by its advance values.
+    # This allows for easy display of a single logical string with multiple calls to `Context#show_text()`. 
+    # *text* : string of text.
+    # Returns self.
     def show_text(text : String)
       LibCairo.show_text(@pointer.as(LibCairo::Context*), text.to_unsafe)
       self
     end
-       
+
+    # Adds closed paths for text to the current path. The generated path if filled, achieves an effect similar to that of `Context#show_text()`. 
+    # Text conversion and positioning is done similar to `Context#show_text()`. 
+    # Like `Context#show_text()`, after this call the current point is moved to the origin of where the next glyph would be placed in this same progression.
+    # That is, the current point will be at the origin of the final glyph offset by its advance values.
+    # This allows for chaining multiple calls to to `Context#text_path()` without having to set current point in between. 
+    # *text* : string of text.
+    # Returns self.
     def text_path(text : String)
       LibCairo.text_path(@pointer.as(LibCairo::Context*), text.to_unsafe)
       self
     end
- 
-    # Query functions
 
+    # Returns the current compositing operator for the cairo context. 
     def operator : Operator
-      Operator.new(LibCairo.get_operator(@pointer.as(LibCairo::Context*)).value)
+      Operator.new(LibCairo.get_operator(@pointer.as(LibCairo::Context*)))
     end
 
+    # Returns the current source pattern for the cairo context.
     def source : Pattern
       Pattern.new(LibCairo.get_source(@pointer.as(LibCairo::Context*)))
     end
 
+    # Returns the current tolerance value, as set by `Context#tolerance=()`
     def tolerance : Float64
       LibCairo.get_tolerance(@pointer.as(LibCairo::Context*))
     end
 
+    # Returns the current shape antialiasing mode, as set by `Context#antialias=()`
     def antialias : Antialias
       Antialias.new(LibCairo.get_antialias(@pointer.as(LibCairo::Context*)).value)
     end
 
+    # Returns whether a current point is defined on the current path.
     def has_current_point? : Bool
       LibCairo.has_current_point(@pointer.as(LibCairo::Context*)) == 1
     end
 
+    # Returns the current point of the current path, which is conceptually the final point reached by the path so far. 
+    # The current point is returned in the user-space coordinate system.
+    # If there is no defined current point or if the context is in an error status, *x* and *y* will both be set to 0.0.
+    # It is possible to check this in advance with `Context#has_current_point()`. 
+    # *x* : return value for X coordinate of the current point.
+    # *y* : return value for Y coordinate of the current point.
     def current_point(x : Float64*, y : Float64*) : Void
       LibCairo.get_current_point(@pointer.as(LibCairo::Context*), x, y)
     end
 
+
     def fill_rule : FillRule
-      FillRule.new(LibCairo.get_fill_rule(@pointer.as(LibCairo::Context*)).value)
+      FillRule.new(LibCairo.get_fill_rule(@pointer.as(LibCairo::Context*)))
     end
 
     def line_width : Float64
@@ -808,11 +930,11 @@ module Cairo
     end
 
     def line_cap : LineCap
-      LineCap.new(LibCairo.get_line_cap(@pointer.as(LibCairo::Context*)).value)
+      LineCap.new(LibCairo.get_line_cap(@pointer.as(LibCairo::Context*)))
     end
 
     def line_join : LineJoin
-      LineJoin.new(LibCairo.get_line_join(@pointer.as(LibCairo::Context*)).value)
+      LineJoin.new(LibCairo.get_line_join(@pointer.as(LibCairo::Context*)))
     end
 
     def miter_limit : Float64

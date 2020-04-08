@@ -157,7 +157,7 @@ We import the Cairo module:
 ```cr
 require "../src/cairo"
 ```
-In the class\92s constructor we create an empty window:
+In the next line we create an empty window:
 
 ```cr
 @window = Gtk::Window.new

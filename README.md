@@ -29,7 +29,7 @@ Note: "crystal-gobject" uses *cairo-1.0.typelib* from *gir1.2-freedesktop* packa
 
 ```crystal
 require "gobject/gtk"
-require "cairo"
+require "cairo/cairo"
 ```
 For more details see the sample in [/samples](/samples) folder.
 

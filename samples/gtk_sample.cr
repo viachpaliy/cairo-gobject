@@ -1,5 +1,5 @@
 require "gobject/gtk/autorun"
-require "../src/cairo"
+require "cairo/cairo"
 
 class CairoApp
   @window : Gtk::Window

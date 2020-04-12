@@ -29,7 +29,7 @@ Note: "crystal-gobject" uses *cairo-1.0.typelib* from *gir1.2-freedesktop* packa
 
 ```crystal
 require "gobject/gtk"
-require "cairo/cairo"
+require "cairo-gobject/cairo"
 ```
 For more details see the sample in [/samples](/samples) folder.
 
@@ -42,6 +42,10 @@ Run sample :
   crystal run samples/sample_name.cr
 ```
 
+See also samples in :
+
+- [gtk_custom_widgets](https://github.com/viachpaliy/gtk_custom_widgets) - Collection of custom widgets.
+ 
 ## Development
 
 TODO: Write development instructions here
@@ -57,6 +61,12 @@ TODO: Write development instructions here
 ## Contributors
 
 - [viachpaliy](https://github.com/viachpaliy) - creator and maintainer
+
+## Library specific shards
+
+Here's a well known list of  them:
+
+- [gtk_custom_widgets](https://github.com/viachpaliy/gtk_custom_widgets) - Collection of custom widgets.
 
 ## Introduction
 Cairo-gobject is a Crystal shard for working with the Cairo library.

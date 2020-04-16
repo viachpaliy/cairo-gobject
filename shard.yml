@@ -4,13 +4,13 @@ version: 0.1.0
 authors:
   - Viacheslav Paliy <viachpaliy@ukr.net>
 
-crystal: 0.31.1
+crystal: 0.34.0
 
 description: "Cairo bindings for applying with crystal-gobject"
 
 dependencies:
   gobject :
-    github : jhass/crystal-gobject
-    branch : master
+    github: jhass/crystal-gobject
+    branch: master
 
 license: MIT

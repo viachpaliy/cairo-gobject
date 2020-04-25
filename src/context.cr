@@ -840,7 +840,7 @@ module Cairo
     # Replaces the current cairo_font_face_t object in the cairo_t with font_face.
     # *font_face* : a `Cairo::FontFace`, or nil to restore to the default font.
     # Returns self.
-    def font_face=(font_face : FontFace | Nil = nil)
+    def font_face=(font_face : FontFace)
       LibCairo.set_font_face(@pointer.as(LibCairo::Context*), font_face.to_unsafe)
       self
     end
@@ -1004,6 +1004,13 @@ module Cairo
     def status : Status
       Status.new(LibCairo.status(@pointer.as(LibCairo::Context*)))
     end
+
+    # Returns the extents for a string of text.
+    def text_extents(text : String) : TextExtents
+      t_e = TextExtents.new  
+      LibCairo.text_extents(@pointer.as(LibCairo::Context*), text.to_unsafe, t_e.to_unsafe)
+      t_e
+    end 
 
   end
 end

@@ -62,8 +62,11 @@ class CairoApp
     context = Gdk.cairo_create(@darea.window.not_nil!)
     context.set_source_rgb(0, 0, 100) 
     context.select_font_face("Sans", Cairo::FontSlant::NORMAL , Cairo::FontWeight::NORMAL)
-    context.font_size=40 
-    context.move_to(100,150)
+    context.font_size=40
+    t_e = context.text_extents("Cairo draw text!")
+    x = (@darea.allocated_width - t_e.width)/2 
+    y = (@darea.allocated_height - t_e.height)/2 
+    context.move_to(x,y)
     context.show_text("Cairo draw text!")
   end
 

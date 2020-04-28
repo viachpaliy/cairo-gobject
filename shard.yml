@@ -11,6 +11,6 @@ description: "Cairo bindings for applying with crystal-gobject"
 dependencies:
   gobject :
     github: jhass/crystal-gobject
-    branch: master
+    branch: ~> 0.4.0
 
 license: MIT

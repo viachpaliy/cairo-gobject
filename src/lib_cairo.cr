@@ -344,6 +344,8 @@ lib LibCairo
   fun stroke_preserve = cairo_stroke_preserve(cr : LibCairo::Context* ) : Void 
   
   fun fill = cairo_fill(cr : LibCairo::Context*) : Void 
+
+  fun fill_preserve = cairo_fill_preserve(cr : LibCairo::Context*) : Void 
   
   fun copy_page = cairo_copy_page(cr : LibCairo::Context*) : Void
 

@@ -10,11 +10,11 @@ class CairoApp
 
     @window = Gdk::Window.new(nil,
       Gdk::WindowAttr.new(
-      title: "Simple Cairo Example",
+      title: "Cairo line caps example",
       window_type: Gdk::WindowType::TOPLEVEL,
       wclass: Gdk::WindowWindowClass::INPUT_OUTPUT,
-      width: 800,
-      height: 600
+      width: 600,
+      height: 400
       ),
       Gdk::WindowAttributesType.flags(TITLE)
       )
@@ -25,6 +25,9 @@ class CairoApp
   end 
   
   def draw(context)
+    context.set_source_rgb( 1.0, 1.0, 1.0)
+    context.rectangle(0, 0, 600, 400)
+    context.fill
     context.set_source_rgb( 0.3, 0.19, 0.4) 
     context.line_width=10
     context.line_cap=Cairo::LineCap::BUTT

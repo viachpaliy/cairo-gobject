@@ -10,11 +10,11 @@ class CairoApp
 
     @window = Gdk::Window.new(nil,
       Gdk::WindowAttr.new(
-      title: "Simple Cairo Example",
+      title: "Cairo fill and stroke example",
       window_type: Gdk::WindowType::TOPLEVEL,
       wclass: Gdk::WindowWindowClass::INPUT_OUTPUT,
-      width: 800,
-      height: 600
+      width: 600,
+      height: 400
       ),
       Gdk::WindowAttributesType.flags(TITLE)
       )
@@ -25,10 +25,13 @@ class CairoApp
   end 
   
   def draw(context)
+    context.set_source_rgb( 1.0, 1.0, 1.0)
+    context.rectangle(0, 0, 600, 400)
+    context.fill
     context.line_width=9
     context.set_source_rgb( 0.69, 0.19, 0) 
-    context.translate(400,300)
-    context.arc(0,0,50,0,6.283)
+    context.translate(300,200)
+    context.arc(0, 0, 100, 0, 2*Math::PI)
     context.stroke_preserve
     context.set_source_rgb( 0.30, 0.40, 0.60)
     context.fill

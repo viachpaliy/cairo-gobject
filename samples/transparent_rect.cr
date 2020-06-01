@@ -8,7 +8,7 @@ class CairoApp
 
   def initialize
     @window = Gtk::Window.new
-    @window.title = "Radial gradient"
+    @window.title = "Cairo transparent example"
     @window.resize 500,150
     @window.connect "destroy", &->Gtk.main_quit
     darea = Gtk::DrawingArea.new

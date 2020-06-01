@@ -13,8 +13,8 @@ class CairoApp
       title: "Simple Cairo Example",
       window_type: Gdk::WindowType::TOPLEVEL,
       wclass: Gdk::WindowWindowClass::INPUT_OUTPUT,
-      width: 800,
-      height: 600
+      width: 600,
+      height: 400
       ),
       Gdk::WindowAttributesType.flags(TITLE)
       )
@@ -25,10 +25,13 @@ class CairoApp
   end 
   
   def draw(context)
-    context.set_source_rgb( 100, 100, 0) 
+    context.set_source_rgb( 1.0, 1.0, 1.0)
+    context.rectangle(0, 0, 600, 400)
+    context.fill
+    context.set_source_rgb( 0, 0, 100) 
     context.select_font_face("Sans", Cairo::FontSlant::NORMAL , Cairo::FontWeight::NORMAL)
-    context.font_size=40 
-    context.move_to(10,50)
+    context.font_size=80 
+    context.move_to(10,200)
     context.show_text("Cairo works!!!")
   end 
 

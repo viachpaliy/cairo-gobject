@@ -1,4 +1,6 @@
 require "gobject"
+# uncomment next string if you use Ubuntu16.04 based distributives (for example, Linux Mint 18)
+#require "./patch_for_ubuntu1604.cr"
 require "./lib_cairo"
 require "./surface.cr"
 require "./font_face.cr"

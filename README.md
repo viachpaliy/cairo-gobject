@@ -12,7 +12,12 @@ First install cairo:
 ```bash
 sudo apt-get install libgirepository1.0-dev libgtk-3-dev libcairo-gobject2 gir1.2-freedesktop
 ```
-Note: "crystal-gobject" uses *cairo-1.0.typelib* from *gir1.2-freedesktop* package for generating cairo bindings. Different versions of Ubuntu use different versions of *gir1.2-freedesktop* package. If you use Ubuntu18.04 based distributives uncomment *Rectangle* structure in *src/lib_cairo.cr* file (lines 7...12).  
+Note: "crystal-gobject" uses *cairo-1.0.typelib* from *gir1.2-freedesktop* package for generating cairo bindings. Different versions of Ubuntu use different versions of *gir1.2-freedesktop* package.
+If you use Ubuntu16.04 based distributives uncomment line 3 in *src/cairo.cr* file 
+```crystal
+require "./patch_for_ubuntu1604.cr"
+```
+If you use Ubuntu18.04 based distributives uncomment *Rectangle* structure in *src/lib_cairo.cr* file (lines 7...12).  
 If you use Ubuntu 20.04 LTS (Focal Fossa) based distributives need install *libevent-2.1-6* pkg :  
 ```sh
    sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ eoan main"
